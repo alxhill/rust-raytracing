@@ -1,10 +1,15 @@
-use std::io::{BufWriter, stdout};
+#![allow(dead_code)]
+
+use image::{ImageBuffer};
+
+type Float = f32;
+type Double = f64;
 
 fn main() {
-    let stdout = stdout();
-    let msg = String::from("Hello world!");
-    let len = msg.chars().count();
+    println!("Starting execution.");
+    let img= ImageBuffer::from_fn(128, 128, |x, y| {
+        image::Rgb([x as u8, y as u8, ((x+y)/2) as u8])
+    });
 
-    let mut writer = BufWriter::new(stdout.lock());
-    say(msg.as_bytes(), len, &mut writer).unwrap();
+    img.save("test.png").unwrap();
 }
