@@ -1,15 +1,18 @@
 #![allow(dead_code)]
 
-use image::{ImageBuffer};
+mod types;
 
-type Float = f32;
-type Double = f64;
+use image::ImageBuffer;
+use types::Point2D;
+
 
 fn main() {
     println!("Starting execution.");
-    let img= ImageBuffer::from_fn(128, 128, |x, y| {
+    let img = ImageBuffer::from_fn(128, 128, |x, y| {
         image::Rgb([x as u8, y as u8, ((x+y)/2) as u8])
     });
+
+    let v: Point2D = Point2D::new(0.0, 0.0);
 
     img.save("test.png").unwrap();
 }
