@@ -3,7 +3,7 @@
 mod types;
 
 use image::ImageBuffer;
-use types::Point2D;
+use types::*;
 
 
 fn main() {
