@@ -4,8 +4,9 @@ mod types;
 mod world;
 
 use image::ImageBuffer;
-use types::*;
-
+use crate::types::Point3D;
+use crate::world::World;
+use crate::world::Sphere;
 
 fn main() {
     println!("Starting execution.");
@@ -13,7 +14,8 @@ fn main() {
         image::Rgb([x as u8, y as u8, ((x+y)/2) as u8])
     });
 
-    let v: Point2D = Point2D::new(0.0, 0.0);
+    let mut w = World::new();
+    w.add(Box::new(Sphere::new(Point3D::zero(), 1.0)));
 
     img.save("test.png").unwrap();
 }

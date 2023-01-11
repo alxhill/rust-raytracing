@@ -1,5 +1,6 @@
 use crate::types::Double;
 
+#[derive(Copy, Clone, Debug)]
 pub struct Normal {
     x: Double,
     y: Double,

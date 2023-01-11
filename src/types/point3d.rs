@@ -9,6 +9,9 @@ pub struct Point3D {
 }
 
 impl Point3D {
+    pub fn zero() -> Point3D {
+        Point3D {x: 0.0, y: 0.0, z: 0.0}
+    }
     pub fn new(x: Double, y: Double, z: Double) -> Point3D {
         Point3D { x, y, z }
     }

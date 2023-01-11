@@ -9,4 +9,3 @@ pub struct Hit {
 pub trait Hittable {
     fn hit(&self, ray: Ray, tmin: Double) -> Hit;
 }
-
