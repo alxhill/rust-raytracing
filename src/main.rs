@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 mod types;
+mod world;
 
 use image::ImageBuffer;
 use types::*;
