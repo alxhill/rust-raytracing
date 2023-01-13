@@ -18,7 +18,7 @@ fn main() {
 
     let img = ImageBuffer::from_fn(128, 128, |x, y| {
         for obj in w.objects() {
-            let maybeHit = obj.hit(Ray::new(Point3D::zero(), Vector3D::zero()), 0);
+            let maybeHit = obj.hit(Ray::new(Point3D::zero(), Vector3D::zero()), 0.0);
         }
         image::Rgb([x as u8, y as u8, ((x+y)/2) as u8])
     });
