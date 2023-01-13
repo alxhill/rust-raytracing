@@ -11,15 +11,22 @@ pub struct Plane {
 #[derive(Copy, Clone, Debug)]
 pub struct Sphere {
     origin: Point3D,
-    radius: Float,
+    radius: Double,
     color: RGBColor, // temporary
 }
 
 impl Sphere {
-    pub fn new(origin: Point3D, radius: Float, color: RGBColor) -> Sphere {
+    pub fn new(origin: Point3D, radius: Double, color: RGBColor) -> Sphere {
         Sphere {
             origin, radius, color
         }
+    }
+
+    fn get_hit(&self, ray: &Ray, t: &Double) -> Hit {
+        Hit::hit(
+            ray.origin + (ray.direction * *t),
+            (ray.origin + (ray.direction * *t) - self.origin).normalize(),
+            self.color)
     }
 }
 
@@ -48,7 +55,33 @@ impl Hittable for Plane {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: Ray, tmin: Double) -> Option<Hit> {
-        todo!()
+    fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit> {
+        let oc: Vector3D = ray.origin - self.origin;
+        let a: Double = ray.direction * ray.direction;
+        let b: Double = 2.0 * oc * ray.direction;
+        let c: Double = oc * oc - self.radius * self.radius;
+        let discriminant: Double = b * b - 4.0 * a * c;
+
+        if discriminant < 0.0 {
+            return None;
+        }
+
+        // smaller root
+        let mut t: Double = (-b - discriminant.sqrt()) / (2.0 * a);
+
+        if t > Hit::epsilon {
+            *tmin = t;
+            return Some(self.get_hit(ray, &t));
+        }
+
+        // larger root
+        t = (-b + discriminant.sqrt()) / (2.0 * a);
+
+        if t > Hit::epsilon {
+            *tmin = t;
+            return Some(self.get_hit(ray, &t));
+        }
+        None
     }
+
 }

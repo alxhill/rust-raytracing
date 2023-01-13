@@ -18,15 +18,16 @@ impl Vector3D {
     }
     pub fn normal(x: Double, y: Double, z: Double) -> Vector3D {
         let mut v = Vector3D::new(x, y, z);
-        v.normalise();
+        v.normalize();
         return v
     }
 
-    pub fn normalise(&mut self) {
+    pub fn normalize(&mut self) -> Vector3D {
         let length: Double = (self.x * self.x + self.y * self.y + self.z * self.z).sqrt();
         self.x = self.x / length;
         self.y = self.y / length;
         self.z = self.z / length;
+        *self
     }
 }
 
@@ -41,6 +42,13 @@ impl Mul<Double> for Vector3D{
     type Output = Vector3D;
     fn mul(self, r: Double) -> Vector3D {
         Vector3D::new(r * self.x, r*self.y, r*self.z)
+    }
+}
+
+impl Mul<Vector3D> for Double {
+    type Output = Vector3D;
+    fn mul(self, r: Vector3D) -> Vector3D {
+        r * self
     }
 }
 
