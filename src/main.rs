@@ -5,6 +5,7 @@ mod world;
 
 use image::ImageBuffer;
 use crate::types::Point3D;
+use crate::types::Ray;
 use crate::world::World;
 use crate::world::Sphere;
 
@@ -16,6 +17,11 @@ fn main() {
 
     let mut w = World::new();
     w.add(Box::new(Sphere::new(Point3D::zero(), 1.0)));
+
+    for obj in w.objects() {
+        let maybeHit = obj.hit(Ray::new(Point3D::zero(), Vector3D::zero()), 0);
+
+    }
 
     img.save("test.png").unwrap();
 }

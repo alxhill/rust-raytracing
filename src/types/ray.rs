@@ -8,7 +8,7 @@ pub struct Ray {
 }
 
 impl Ray {
-    fn new(origin: Point3D, direction: Vector3D) -> Ray {
+    pub fn new(origin: Point3D, direction: Vector3D) -> Ray {
         Ray {origin, direction}
     }
 }

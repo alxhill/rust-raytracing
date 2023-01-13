@@ -9,6 +9,9 @@ pub struct Vector3D {
 }
 
 impl Vector3D {
+    pub fn zero() -> Vector3D {
+        Vector3D { x: 0.0, y: 0.0, z: 0.0 }
+    }
     pub fn new(x: Double, y: Double, z: Double) -> Vector3D {
         Vector3D { x, y, z }
     }

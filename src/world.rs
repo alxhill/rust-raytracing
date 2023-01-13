@@ -1,6 +1,7 @@
 mod objects;
 mod tracing;
 
+
 use tracing::*;
 pub use objects::*;
 
@@ -15,5 +16,9 @@ impl World {
 
     pub fn add(&mut self, obj: Box<dyn Hittable>) {
         self.objects.push(obj)
+    }
+
+    pub fn objects(&self) -> &Vec<Box<dyn Hittable>> {
+        &self.objects
     }
 }

@@ -22,13 +22,13 @@ impl Sphere {
 }
 
 impl Hittable for Plane {
-    fn hit(&self, ray: Ray, tmin: Double) -> crate::world::tracing::Hit {
+    fn hit(&self, ray: Ray, tmin: Double) -> Option<Hit> {
         todo!()
     }
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: Ray, tmin: Double) -> Hit {
+    fn hit(&self, ray: Ray, tmin: Double) -> Option<Hit> {
         todo!()
     }
 }
