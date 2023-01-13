@@ -2,13 +2,13 @@ use crate::types::Float;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct RGBColor {
-    r: Float,
-    g: Float,
-    b: Float,
+   pub r: Float,
+   pub g: Float,
+   pub b: Float,
 }
 
 impl RGBColor {
-    pub fn new(r: Float, g: Float, b: Float) -> RGBColor {
+    pub const fn new(r: Float, g: Float, b: Float) -> RGBColor {
         RGBColor{ r, g, b }
     }
 

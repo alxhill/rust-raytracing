@@ -5,7 +5,7 @@ use crate::world::*;
 pub struct Hit {
     hit_loc: Point3D,
     normal: Vector3D,
-    color: RGBColor,
+    pub color: RGBColor,
 }
 
 impl Hit {
