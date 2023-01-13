@@ -16,8 +16,11 @@ impl Camera {
         Camera {
             eye: Point3D::zero(),
             look_at: Point3D::zero(),
-            up: Point3D::zero(),
-            exposure_time: 1.0
+            up: Vector3D::zero(),
+            exposure_time: 1.0,
+            u: None,
+            v: None,
+            w: None,
         }
     }
 }

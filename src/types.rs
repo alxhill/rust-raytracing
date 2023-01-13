@@ -12,7 +12,7 @@ pub use point3d::Point3D;
 pub use matrix::Matrix;
 pub use ray::Ray;
 pub use vector3d::Vector3D;
-pub use color::RGBColor;
+pub use color::*;
 pub use normal::Normal;
 
 pub type Float = f32;
