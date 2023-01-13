@@ -39,6 +39,14 @@ impl Add for Point3D {
     }
 }
 
+impl Add<Vector3D> for Point3D {
+    type Output = Point3D;
+
+    fn add(self, rhs: Vector3D) -> Self::Output {
+        Point3D::new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
+    }
+}
+
 impl Mul<Double> for Point3D {
     type Output = Point3D;
 

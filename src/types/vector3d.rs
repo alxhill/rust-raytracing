@@ -4,9 +4,9 @@ use crate::types::{Distance, Double, utils};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vector3D {
-    x: Double,
-    y: Double,
-    z: Double,
+    pub x: Double,
+    pub y: Double,
+    pub z: Double,
 }
 
 impl Vector3D {

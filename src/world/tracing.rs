@@ -14,11 +14,11 @@ impl Hit {
             hit_loc, normal, color
         }
     }
+
+    pub const epsilon: Double = 1e-6;
 }
 
 pub trait Hittable {
     fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit>;
-
-    const epsilon: Double = 1e-6;
 }
 

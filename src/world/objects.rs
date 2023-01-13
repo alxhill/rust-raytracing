@@ -35,10 +35,10 @@ impl Hittable for Plane {
     fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit> {
         let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 
-        if t > Hittable::epsilon {
-            tmin = t;
+        if t > Hit::epsilon {
+            *tmin = t;
             return Some(Hit::hit(
-                ray.origin + t*ray.direction,
+                ray.origin + (ray.direction * t),
                 self.normal,
                 self.color
             ))
