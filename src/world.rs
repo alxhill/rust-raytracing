@@ -9,10 +9,12 @@ pub use camera::*;
 pub use objects::*;
 pub use ray::*;
 use tracing::*;
+use crate::world::viewplane::ViewPlane;
 
 pub struct World {
     camera: Camera,
     objects: Vec<Box<dyn Hittable>>,
+    view_plane: ViewPlane,
     pub bg_color: RGBColor,
 }
 
@@ -21,6 +23,7 @@ impl World {
         World {
             camera: Camera::default(),
             objects: Vec::new(),
+            view_plane: ViewPlane::new(128, 128, 1.0),
             bg_color: RGBColor::BLACK,
         }
     }
