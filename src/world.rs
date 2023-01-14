@@ -5,11 +5,11 @@ mod tracing;
 mod viewplane;
 
 use crate::types::RGBColor;
+use crate::world::viewplane::ViewPlane;
 pub use camera::*;
 pub use objects::*;
 pub use ray::*;
 use tracing::*;
-use crate::world::viewplane::ViewPlane;
 
 pub struct World {
     camera: Camera,
