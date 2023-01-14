@@ -30,7 +30,7 @@ impl Distance for Point3D {
 
 impl Sub for Point3D {
     type Output = Vector3D;
-    fn sub(self, rhs: Self) -> Self::Output {
+    fn sub(self, rhs: Point3D) -> Vector3D {
         Vector3D::new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
     }
 }

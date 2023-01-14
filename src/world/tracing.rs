@@ -1,4 +1,4 @@
-use crate::types::{Double, Point3D, RGBColor, Ray, Vector3D};
+use crate::types::{Double, Point3D, RGBColor, Vector3D};
 use crate::world::*;
 
 #[derive(Copy, Clone, Debug)]

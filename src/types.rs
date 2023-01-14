@@ -5,7 +5,6 @@ mod point3d;
 mod utils;
 mod vector3d;
 
-pub use crate::world::ray::Ray;
 pub use color::*;
 pub use matrix::Matrix;
 pub use point2d::Point2D;

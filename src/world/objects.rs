@@ -1,5 +1,6 @@
-use crate::types::{Double, Float, Normal, Point3D, RGBColor, Ray, Vector3D};
+use crate::types::{Double, Point3D, RGBColor, Vector3D};
 use crate::world::tracing::{Hit, Hittable};
+use crate::world::Ray;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Plane {
@@ -45,7 +46,8 @@ impl Plane {
 
 impl Hittable for Plane {
     fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit> {
-        let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
+        let v: Vector3D = self.point - ray.origin;
+        let t: Double = ((self.point - ray.origin) * self.normal) / (ray.direction * self.normal);
 
         if t > Hit::EPSILON {
             *tmin = t;
@@ -63,7 +65,7 @@ impl Hittable for Sphere {
     fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit> {
         let oc: Vector3D = ray.origin - self.origin;
         let a: Double = ray.direction * ray.direction;
-        let b: Double = 2.0 * oc * ray.direction;
+        let b: Double = 2.0 * (oc * ray.direction);
         let c: Double = oc * oc - self.radius * self.radius;
         let discriminant: Double = b * b - 4.0 * a * c;
 
