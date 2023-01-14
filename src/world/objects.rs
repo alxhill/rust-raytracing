@@ -1,4 +1,4 @@
-use crate::types::{Double, Float, Normal, Point3D, Ray, RGBColor, Vector3D};
+use crate::types::{Double, Float, Normal, Point3D, RGBColor, Ray, Vector3D};
 use crate::world::tracing::{Hit, Hittable};
 
 #[derive(Copy, Clone, Debug)]
@@ -18,7 +18,9 @@ pub struct Sphere {
 impl Sphere {
     pub fn new(origin: Point3D, radius: Double, color: RGBColor) -> Sphere {
         Sphere {
-            origin, radius, color
+            origin,
+            radius,
+            color,
         }
     }
 
@@ -26,14 +28,17 @@ impl Sphere {
         Hit::hit(
             ray.origin + (ray.direction * *t),
             (ray.origin + (ray.direction * *t) - self.origin).normalize(),
-            self.color)
+            self.color,
+        )
     }
 }
 
 impl Plane {
     pub fn new(point: Point3D, normal: Vector3D, color: RGBColor) -> Plane {
         Plane {
-            point, normal, color
+            point,
+            normal,
+            color,
         }
     }
 }
@@ -42,13 +47,13 @@ impl Hittable for Plane {
     fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit> {
         let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 
-        if t > Hit::epsilon {
+        if t > Hit::EPSILON {
             *tmin = t;
             return Some(Hit::hit(
                 ray.origin + (ray.direction * t),
                 self.normal,
-                self.color
-            ))
+                self.color,
+            ));
         }
         None
     }
@@ -69,7 +74,7 @@ impl Hittable for Sphere {
         // smaller root
         let mut t: Double = (-b - discriminant.sqrt()) / (2.0 * a);
 
-        if t > Hit::epsilon {
+        if t > Hit::EPSILON {
             *tmin = t;
             return Some(self.get_hit(ray, &t));
         }
@@ -77,11 +82,10 @@ impl Hittable for Sphere {
         // larger root
         t = (-b + discriminant.sqrt()) / (2.0 * a);
 
-        if t > Hit::epsilon {
+        if t > Hit::EPSILON {
             *tmin = t;
             return Some(self.get_hit(ray, &t));
         }
         None
     }
-
 }

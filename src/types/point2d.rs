@@ -1,5 +1,5 @@
+use crate::types::{utils, Distance, Double};
 use utils::diff_sq;
-use crate::types::{Distance, Double, utils};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Point2D {
@@ -9,13 +9,13 @@ pub struct Point2D {
 
 impl Point2D {
     pub fn zero() -> Point2D {
-        Point2D {x: 0.0, y: 0.0}
+        Point2D { x: 0.0, y: 0.0 }
     }
     pub fn both(val: Double) -> Point2D {
         Point2D { x: val, y: val }
     }
     pub fn new(x: Double, y: Double) -> Point2D {
-        Point2D {x, y}
+        Point2D { x, y }
     }
 }
 

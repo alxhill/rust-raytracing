@@ -1,4 +1,4 @@
-use crate::types::{Vector3D, Point3D, Double};
+use crate::types::{Double, Point3D, Vector3D};
 
 #[derive(Copy, Clone, Debug)]
 pub struct Camera {

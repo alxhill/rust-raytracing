@@ -1,4 +1,4 @@
-use crate::types::{Double};
+use crate::types::Double;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Matrix {

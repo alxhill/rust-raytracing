@@ -1,6 +1,6 @@
-use std::ops::{Add, BitXor, Div, Mul, Neg, Sub};
 use crate::types;
-use crate::types::{Distance, Double, utils};
+use crate::types::{utils, Distance, Double};
+use std::ops::{Add, BitXor, Div, Mul, Neg, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vector3D {
@@ -11,7 +11,11 @@ pub struct Vector3D {
 
 impl Vector3D {
     pub fn zero() -> Vector3D {
-        Vector3D { x: 0.0, y: 0.0, z: 0.0 }
+        Vector3D {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        }
     }
     pub fn new(x: Double, y: Double, z: Double) -> Vector3D {
         Vector3D { x, y, z }
@@ -19,7 +23,7 @@ impl Vector3D {
     pub fn normal(x: Double, y: Double, z: Double) -> Vector3D {
         let mut v = Vector3D::new(x, y, z);
         v.normalize();
-        return v
+        return v;
     }
 
     pub fn normalize(&mut self) -> Vector3D {
@@ -33,15 +37,18 @@ impl Vector3D {
 
 impl Distance for Vector3D {
     fn dist(&self, other: &Vector3D) -> Double {
-        (utils::diff_sq(self.x, other.x) + utils::diff_sq(self.y, other.y) + utils::diff_sq(self.z, other.z)).sqrt()
+        (utils::diff_sq(self.x, other.x)
+            + utils::diff_sq(self.y, other.y)
+            + utils::diff_sq(self.z, other.z))
+        .sqrt()
     }
 }
 
 // Scalar Multiplication
-impl Mul<Double> for Vector3D{
+impl Mul<Double> for Vector3D {
     type Output = Vector3D;
     fn mul(self, r: Double) -> Vector3D {
-        Vector3D::new(r * self.x, r*self.y, r*self.z)
+        Vector3D::new(r * self.x, r * self.y, r * self.z)
     }
 }
 
@@ -52,7 +59,7 @@ impl Mul<Vector3D> for Double {
     }
 }
 
-impl Mul for Vector3D{
+impl Mul for Vector3D {
     type Output = Double;
     fn mul(self, r: Vector3D) -> Double {
         self.x * r.x + self.y * r.y + self.z * r.z
@@ -60,47 +67,51 @@ impl Mul for Vector3D{
 }
 
 // Cross Product
-impl BitXor<Vector3D> for Vector3D{
+impl BitXor<Vector3D> for Vector3D {
     type Output = Vector3D;
     fn bitxor(self, v: Vector3D) -> Vector3D {
-        Vector3D::new(self.y*v.z-self.z*v.y, self.z*v.x-self.z*v.z, self.x*v.y-self.y*v.x)
+        Vector3D::new(
+            self.y * v.z - self.z * v.y,
+            self.z * v.x - self.z * v.z,
+            self.x * v.y - self.y * v.x,
+        )
     }
 }
 
 // Addition
-impl Add for Vector3D{
+impl Add for Vector3D {
     type Output = Vector3D;
-    fn add(self, r: Vector3D) -> Vector3D{
+    fn add(self, r: Vector3D) -> Vector3D {
         Vector3D::new(self.x + r.x, self.y + r.y, self.z + r.z)
     }
 }
 
 // Subtraction
-impl Sub for Vector3D{
+impl Sub for Vector3D {
     type Output = Vector3D;
-    fn sub(self, r: Vector3D) -> Vector3D{
+    fn sub(self, r: Vector3D) -> Vector3D {
         Vector3D::new(self.x - r.x, self.y - r.y, self.z - r.z)
     }
 }
 
 // Negation
-impl Neg for Vector3D{
+impl Neg for Vector3D {
     type Output = Vector3D;
-    fn neg(self) -> Vector3D{
+    fn neg(self) -> Vector3D {
         Vector3D::new(-self.x, -self.y, -self.z)
     }
 }
 
 // Division
-impl Div<Double> for Vector3D{
+impl Div<Double> for Vector3D {
     type Output = Vector3D;
-    fn div(self, r: f64) -> Vector3D{
+    fn div(self, r: f64) -> Vector3D {
         Vector3D::new(self.x / r, self.y / r, self.z / r)
     }
 }
 
 // Not-Equal to a float
-impl PartialEq<Double> for Vector3D{
+impl PartialEq<Double> for Vector3D {
     fn eq(&self, v: &Double) -> bool {
         self.x == *v || self.y == *v || self.z == *v
     }
