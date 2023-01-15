@@ -46,8 +46,7 @@ impl Plane {
 
 impl Hittable for Plane {
     fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit> {
-        let v: Vector3D = self.point - ray.origin;
-        let t: Double = ((self.point - ray.origin) * self.normal) / (ray.direction * self.normal);
+        let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 
         if t > Hit::EPSILON {
             *tmin = t;
