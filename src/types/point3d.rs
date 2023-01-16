@@ -1,4 +1,4 @@
-use crate::types::{utils, Distance, Double, Float, Vector3D};
+use crate::types::{utils, Distance, Double, Vector3D};
 use std::ops::{Add, Mul, Sub};
 use utils::diff_sq;
 

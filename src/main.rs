@@ -10,17 +10,13 @@ use crate::render::{CanvasRender, ImageRender};
 use crate::types::*;
 use crate::world::*;
 use pixel_canvas::input::MouseState;
-use pixel_canvas::{Canvas, Color, XY};
+use pixel_canvas::Canvas;
 
 fn main() {
     println!("Starting execution.");
 
     let mut w = World::new();
-    w.add(Box::new(Sphere::new(
-        Point3D::new(0.0, 0.0, 1.0),
-        1.0,
-        RGBColor::RED,
-    )));
+    w.add(Box::new(Sphere::new(Point3D::zero(), 50.0, RGBColor::RED)));
 
     let flag = std::env::args().nth(1).unwrap_or("--output".to_string());
 

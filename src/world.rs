@@ -5,15 +5,16 @@ mod tracing;
 mod viewplane;
 
 use crate::render::Renderable;
-use crate::types::{Double, Point3D, RGBColor, Vector3D};
-use crate::world::viewplane::ViewPlane;
+use crate::types::Double;
+use crate::types::RGBColor;
+pub use crate::world::viewplane::*;
 pub use camera::*;
 pub use objects::*;
 pub use ray::*;
 use tracing::*;
 
 pub struct World {
-    camera: Camera,
+    camera: FlatCamera,
     objects: Vec<Box<dyn Hittable>>,
     view_plane: ViewPlane,
     pub bg_color: RGBColor,
@@ -22,10 +23,10 @@ pub struct World {
 impl World {
     pub fn new() -> World {
         World {
-            camera: Camera::default(),
+            camera: FlatCamera::default(),
             objects: Vec::new(),
             view_plane: ViewPlane::new(128, 128, 1.0),
-            bg_color: RGBColor::GREEN,
+            bg_color: RGBColor::BLACK,
         }
     }
 
@@ -38,19 +39,15 @@ impl World {
     }
 
     pub fn render_to<T: Renderable>(&self, img: &mut T) {
-        for x in 0..self.view_plane.hres {
-            for y in 0..self.view_plane.vres {
-                img.set_pixel(x, y, self.render_pixel(x, y));
-            }
-        }
+        self.view_plane.for_each_pixel(|xy| {
+            let ray = self.camera.get_ray(&xy, &self.view_plane);
+            let color = self.render_pixel(&ray);
+            img.set_pixel(xy, &color);
+        });
     }
 
-    fn render_pixel(&self, x: u32, y: u32) -> RGBColor {
+    fn render_pixel(&self, ray: &Ray) -> RGBColor {
         let mut tmin: Double = f64::MAX;
-        let ray: Ray = Ray::new(
-            Point3D::new(x as Double, y as Double, 100.0),
-            Vector3D::new(0.0, 0.0, -1.0),
-        );
         let mut hit: Option<Hit> = None;
         for obj in self.objects() {
             let maybe_hit = obj.hit(&ray, &mut tmin);

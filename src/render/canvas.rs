@@ -1,6 +1,7 @@
 use crate::render::Renderable;
 use crate::types::RGBColor;
-use pixel_canvas::{Color, Image, RC, XY};
+use crate::world::ViewXY;
+use pixel_canvas::{Color, Image, XY};
 
 pub struct CanvasRender<'a> {
     canvas_img: &'a mut Image,
@@ -12,10 +13,16 @@ impl CanvasRender<'_> {
     }
 }
 
+impl ViewXY {
+    fn to_xy(&self) -> XY {
+        XY(self.x() as usize, self.y() as usize)
+    }
+}
+
 impl Renderable for CanvasRender<'_> {
-    fn set_pixel(&mut self, x: u32, y: u32, color: RGBColor) {
+    fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
         let rgb = color.to_rgb();
-        self.canvas_img[XY(x as usize, y as usize)] = Color {
+        self.canvas_img[xy.to_xy()] = Color {
             r: rgb[0],
             g: rgb[1],
             b: rgb[2],

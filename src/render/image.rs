@@ -1,5 +1,6 @@
 use crate::render::Renderable;
-use crate::types::{Double, Float, RGBColor};
+use crate::types::RGBColor;
+use crate::world::ViewXY;
 use image::{ImageBuffer, Rgb};
 
 pub struct ImageRender {
@@ -23,7 +24,7 @@ impl ImageRender {
 }
 
 impl Renderable for ImageRender {
-    fn set_pixel(&mut self, x: u32, y: u32, color: RGBColor) {
-        self.buffer.put_pixel(x, y, color.to_rgb());
+    fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
+        self.buffer.put_pixel(xy.x(), xy.y(), color.to_rgb());
     }
 }

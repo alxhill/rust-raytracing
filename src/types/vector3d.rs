@@ -1,4 +1,3 @@
-use crate::types;
 use crate::types::{utils, Distance, Double};
 use std::ops::{Add, BitXor, Div, Mul, Neg, Sub};
 
@@ -10,15 +9,16 @@ pub struct Vector3D {
 }
 
 impl Vector3D {
+    pub const fn new(x: Double, y: Double, z: Double) -> Vector3D {
+        Vector3D { x, y, z }
+    }
+
     pub fn zero() -> Vector3D {
         Vector3D {
             x: 0.0,
             y: 0.0,
             z: 0.0,
         }
-    }
-    pub fn new(x: Double, y: Double, z: Double) -> Vector3D {
-        Vector3D { x, y, z }
     }
     pub fn normal(x: Double, y: Double, z: Double) -> Vector3D {
         let mut v = Vector3D::new(x, y, z);

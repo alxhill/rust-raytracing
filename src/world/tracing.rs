@@ -23,3 +23,7 @@ impl Hit {
 pub trait Hittable {
     fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit>;
 }
+
+pub trait Tracer {
+    fn trace(&self, ray: &Ray, depth: u32) -> RGBColor;
+}
