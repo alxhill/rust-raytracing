@@ -25,10 +25,11 @@ impl Sphere {
         }
     }
 
-    fn get_hit(&self, ray: &Ray, t: &Double) -> Hit {
+    fn get_hit(&self, ray: &Ray, t: Double) -> Hit {
         Hit::hit(
-            ray.origin + (ray.direction * *t),
-            (ray.origin + (ray.direction * *t) - self.origin).normalize(),
+            t,
+            ray.origin + (ray.direction * t),
+            (ray.origin + (ray.direction * t) - self.origin).normalize(),
             self.color,
         )
     }
@@ -45,12 +46,12 @@ impl Plane {
 }
 
 impl Hittable for Plane {
-    fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit> {
+    fn hit(&self, ray: &Ray) -> Option<Hit> {
         let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 
         if t > Hit::EPSILON {
-            *tmin = t;
             return Some(Hit::hit(
+                t,
                 ray.origin + (ray.direction * t),
                 self.normal,
                 self.color,
@@ -61,7 +62,7 @@ impl Hittable for Plane {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, tmin: &mut Double) -> Option<Hit> {
+    fn hit(&self, ray: &Ray) -> Option<Hit> {
         let oc: Vector3D = ray.origin - self.origin;
         let a: Double = ray.direction * ray.direction;
         let b: Double = 2.0 * (oc * ray.direction);
@@ -76,16 +77,14 @@ impl Hittable for Sphere {
         let mut t: Double = (-b - discriminant.sqrt()) / (2.0 * a);
 
         if t > Hit::EPSILON {
-            *tmin = t;
-            return Some(self.get_hit(ray, &t));
+            return Some(self.get_hit(ray, t));
         }
 
         // larger root
         t = (-b + discriminant.sqrt()) / (2.0 * a);
 
         if t > Hit::EPSILON {
-            *tmin = t;
-            return Some(self.get_hit(ray, &t));
+            return Some(self.get_hit(ray, t));
         }
         None
     }

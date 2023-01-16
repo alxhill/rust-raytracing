@@ -15,8 +15,18 @@ use pixel_canvas::Canvas;
 fn main() {
     println!("Starting execution.");
 
-    let mut w = World::new();
-    w.add(Box::new(Sphere::new(Point3D::zero(), 50.0, RGBColor::RED)));
+    let mut w = World::default();
+    w.add(Box::new(Sphere::new(Point3D::zero(), 40.0, RGBColor::RED)));
+    w.add(Box::new(Sphere::new(
+        Point3D::new(0.0, 20.0, -1.0),
+        30.0,
+        RGBColor::YELLOW,
+    )));
+    w.add(Box::new(Plane::new(
+        Point3D::zero(),
+        Vector3D::new(0.0, 1.0, 1.0),
+        RGBColor::BLACK,
+    )));
 
     let flag = std::env::args().nth(1).unwrap_or("--output".to_string());
 
@@ -35,8 +45,7 @@ fn main() {
                 if render_count % 100 == 0 {
                     print!("\n");
                 }
-                let mut canvas_render = CanvasRender::new(image);
-                w.render_to(&mut canvas_render);
+                w.render_to(&mut CanvasRender::new(image));
             });
         }
         "--output" => {

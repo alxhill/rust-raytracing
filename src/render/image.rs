@@ -17,10 +17,6 @@ impl ImageRender {
     pub fn save_image(&self, name: String) {
         self.buffer.save(name).expect("Failed to save image");
     }
-
-    pub fn get_pixel(&self, x: u32, y: u32) -> [u8; 3] {
-        self.buffer.get_pixel(x, y).0
-    }
 }
 
 impl Renderable for ImageRender {

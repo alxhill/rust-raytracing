@@ -1,23 +1,24 @@
-use crate::types::Float;
+use crate::types::Double;
 use image::Rgb;
+use std::ops::BitXor;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct RGBColor {
-    pub r: Float,
-    pub g: Float,
-    pub b: Float,
+    pub r: Double,
+    pub g: Double,
+    pub b: Double,
 }
 
 impl RGBColor {
-    pub const fn new(r: Float, g: Float, b: Float) -> RGBColor {
+    pub const fn new(r: Double, g: Double, b: Double) -> RGBColor {
         RGBColor { r, g, b }
     }
 
     pub fn from([r, g, b]: [u8; 3]) -> RGBColor {
         RGBColor {
-            r: r as Float / 255.0,
-            g: g as Float / 255.0,
-            b: b as Float / 255.0,
+            r: r as Double / 255.0,
+            g: g as Double / 255.0,
+            b: b as Double / 255.0,
         }
     }
 
@@ -36,5 +37,14 @@ impl RGBColor {
     pub const WHITE: RGBColor = RGBColor::new(1.0, 1.0, 1.0);
     pub const RED: RGBColor = RGBColor::new(1.0, 0.0, 0.0);
     pub const GREEN: RGBColor = RGBColor::new(0.0, 1.0, 0.0);
+    pub const YELLOW: RGBColor = RGBColor::new(1.0, 1.0, 0.0);
     pub const BLACK: RGBColor = RGBColor::new(0.0, 0.0, 0.0);
+}
+
+impl BitXor<Double> for RGBColor {
+    type Output = RGBColor;
+
+    fn bitxor(self, rhs: Double) -> Self::Output {
+        RGBColor::new(self.r.powf(rhs), self.g.powf(rhs), self.b.powf(rhs))
+    }
 }
