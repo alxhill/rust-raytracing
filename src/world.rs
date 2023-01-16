@@ -11,7 +11,6 @@ pub use crate::world::viewplane::*;
 pub use camera::*;
 pub use objects::*;
 pub use ray::*;
-use std::sync::Arc;
 use tracing::*;
 
 pub struct World<C: Camera> {
@@ -21,15 +20,16 @@ pub struct World<C: Camera> {
     pub bg_color: RGBColor,
 }
 
-impl World<FlatCamera<'_>> {
-    pub fn new<'a>() -> World<FlatCamera<'a>> {
+impl World<FlatCamera> {
+    pub fn new<'a>() -> World<FlatCamera> {
         let view_plane = ViewPlane::new(128, 128, 1.0);
-        World {
-            camera: FlatCamera::default(&view_plane),
+        let w: World<FlatCamera> = World {
+            camera: FlatCamera::default(view_plane),
             objects: Vec::new(),
             view_plane,
             bg_color: RGBColor::BLACK,
-        }
+        };
+        return w;
     }
 }
 
