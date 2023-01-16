@@ -28,11 +28,17 @@ fn main() {
         "--display" => {
             let canvas = Canvas::new(128, 128)
                 .title("Tile")
-                .show_ms(true)
                 .state(MouseState::new())
                 .input(MouseState::handle_input);
 
+            let mut render_count: u32 = 0;
+            println!("Starting display.");
             canvas.render(move |_, image| {
+                print!(".");
+                render_count += 1;
+                if render_count % 100 == 0 {
+                    print!("\n");
+                }
                 let mut canvas_render = CanvasRender::new(image);
                 w.render_to(&mut canvas_render);
             });
