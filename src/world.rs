@@ -11,25 +11,29 @@ pub use crate::world::viewplane::*;
 pub use camera::*;
 pub use objects::*;
 pub use ray::*;
+use std::sync::Arc;
 use tracing::*;
 
-pub struct World {
-    camera: FlatCamera,
+pub struct World<C: Camera> {
+    camera: C,
     objects: Vec<Box<dyn Hittable>>,
     view_plane: ViewPlane,
     pub bg_color: RGBColor,
 }
 
-impl World {
-    pub fn new() -> World {
+impl World<FlatCamera<'_>> {
+    pub fn new<'a>() -> World<FlatCamera<'a>> {
+        let view_plane = ViewPlane::new(128, 128, 1.0);
         World {
-            camera: FlatCamera::default(),
+            camera: FlatCamera::default(&view_plane),
             objects: Vec::new(),
-            view_plane: ViewPlane::new(128, 128, 1.0),
+            view_plane,
             bg_color: RGBColor::BLACK,
         }
     }
+}
 
+impl<C: Camera> World<C> {
     pub fn add(&mut self, obj: Box<dyn Hittable>) {
         self.objects.push(obj)
     }
@@ -40,7 +44,7 @@ impl World {
 
     pub fn render_to<T: Renderable>(&self, img: &mut T) {
         self.view_plane.for_each_pixel(|xy| {
-            let ray = self.camera.get_ray(&xy, &self.view_plane);
+            let ray = self.camera.get_ray(&xy);
             let color = self.render_pixel(&ray);
             img.set_pixel(xy, &color);
         });

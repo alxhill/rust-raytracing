@@ -3,7 +3,12 @@ use crate::world::viewplane::ViewXY;
 use crate::world::{Ray, ViewPlane};
 
 #[derive(Copy, Clone, Debug)]
-pub struct FlatCamera {
+pub struct FlatCamera<'a> {
+    view_plane: &'a ViewPlane,
+}
+
+#[derive(Copy, Clone, Debug)]
+pub struct PerspectiveCamera {
     eye: Point3D,
     look_at: Point3D,
     up: Vector3D,
@@ -14,33 +19,28 @@ pub struct FlatCamera {
 }
 
 pub trait Camera {
-    fn get_ray(&self, view_xy: &ViewXY, view_plane: &ViewPlane) -> Ray;
+    fn get_ray(&self, view_xy: &ViewXY) -> Ray;
 }
 
-const DEFAULT_DIRECTON: Vector3D = Vector3D::new(0.0, 0.0, -1.0);
+const DEFAULT_DIRECTION: Vector3D = Vector3D::new(0.0, 0.0, -1.0);
 const ZW: Double = 100.0;
 
-impl Camera for FlatCamera {
-    fn get_ray(&self, xy: &ViewXY, view_plane: &ViewPlane) -> Ray {
+impl Camera for FlatCamera<'_> {
+    fn get_ray(&self, xy: &ViewXY) -> Ray {
         let (x, y) = (xy.x() as Double, xy.y() as Double);
-        let (w, h) = (view_plane.width as Double, view_plane.height as Double);
-        let xw = view_plane.pixel_size * (x - 0.5 * (w as Double - 1.0));
-        let yw = view_plane.pixel_size * (y - 0.5 * (h as Double - 1.0));
+        let (w, h) = (
+            self.view_plane.width as Double,
+            self.view_plane.height as Double,
+        );
+        let xw = self.view_plane.pixel_size * (x - 0.5 * (w - 1.0));
+        let yw = self.view_plane.pixel_size * (y - 0.5 * (h - 1.0));
 
-        Ray::new(Point3D::new(xw, yw, ZW), DEFAULT_DIRECTON)
+        Ray::new(Point3D::new(xw, yw, ZW), DEFAULT_DIRECTION)
     }
 }
 
-impl FlatCamera {
-    pub fn default() -> FlatCamera {
-        FlatCamera {
-            eye: Point3D::new(-2.0, 2.0, 1.0),
-            look_at: Point3D::zero(),
-            up: Vector3D::zero(),
-            exposure_time: 1.0,
-            u: None,
-            v: None,
-            w: None,
-        }
+impl FlatCamera<'_> {
+    pub fn default(view_plane: &ViewPlane) -> FlatCamera {
+        FlatCamera { view_plane }
     }
 }
