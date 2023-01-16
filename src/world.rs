@@ -4,10 +4,10 @@ mod ray;
 mod tracing;
 mod viewplane;
 
+use crate::render::Renderable;
 use crate::types::{Double, Point3D, RGBColor, Vector3D};
 use crate::world::viewplane::ViewPlane;
 pub use camera::*;
-use image::{ImageBuffer, Rgb};
 pub use objects::*;
 pub use ray::*;
 use tracing::*;
@@ -37,13 +37,15 @@ impl World {
         &self.objects
     }
 
-    pub fn render_to_image(&self) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
-        ImageBuffer::from_fn(self.view_plane.hres, self.view_plane.vres, |x, y| {
-            self.render_pixel(x, y)
-        })
+    pub fn render_to<T: Renderable>(&self, img: &mut T) {
+        for x in 0..self.view_plane.hres {
+            for y in 0..self.view_plane.vres {
+                img.set_pixel(x, y, self.render_pixel(x, y));
+            }
+        }
     }
 
-    fn render_pixel(&self, x: u32, y: u32) -> Rgb<u8> {
+    fn render_pixel(&self, x: u32, y: u32) -> RGBColor {
         let mut tmin: Double = f64::MAX;
         let ray: Ray = Ray::new(
             Point3D::new(x as Double, y as Double, 100.0),
@@ -61,6 +63,5 @@ impl World {
             Some(h) => h.color,
             None => self.bg_color,
         }
-        .to_rgb()
     }
 }
