@@ -25,7 +25,7 @@ impl World {
             camera: Camera::default(),
             objects: Vec::new(),
             view_plane: ViewPlane::new(128, 128, 1.0),
-            bg_color: RGBColor::BLACK,
+            bg_color: RGBColor::GREEN,
         }
     }
 
