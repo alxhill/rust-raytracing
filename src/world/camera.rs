@@ -2,6 +2,8 @@ use crate::types::{Double, Point3D, Vector3D};
 use crate::world::viewplane::ViewXY;
 use crate::world::{Ray, ViewPlane};
 
+pub struct RegularSampler;
+
 #[derive(Debug, Copy, Clone)]
 pub struct PlanarCamera {
     view_plane: ViewPlane,
@@ -18,15 +20,25 @@ pub struct PerspectiveCamera {
     w: Option<Vector3D>,
 }
 
-pub trait Camera {
-    fn get_ray(&self, view_xy: &ViewXY) -> Ray;
+pub trait RayCaster {
+    fn cast_ray(&self, origin: &Point3D, view_xy: &ViewXY) -> Ray;
+}
+
+pub trait RaySampler<T: RayCaster> {
+    fn rays_for_pixel(&self, view_xy: &ViewXY) -> Vec<Ray>;
 }
 
 const DEFAULT_DIRECTION: Vector3D = Vector3D::new(0.0, 0.0, -1.0);
 const ZW: Double = 100.0;
 
-impl Camera for PlanarCamera {
-    fn get_ray(&self, xy: &ViewXY) -> Ray {
+impl RayCaster for PlanarCamera {
+    fn cast_ray(&self, origin: &Point3D, _xy: &ViewXY) -> Ray {
+        Ray::new(*origin, DEFAULT_DIRECTION)
+    }
+}
+
+impl<T: RayCaster> RaySampler<T> for RegularSampler {
+    fn rays_for_pixel(&self, xy: &ViewXY) -> Vec<Ray> {
         let (x, y) = (xy.x() as Double, xy.y() as Double);
         let (w, h) = (
             self.view_plane.width as Double,
@@ -35,7 +47,8 @@ impl Camera for PlanarCamera {
         let xw = self.view_plane.pixel_size * (x - 0.5 * (w - 1.0));
         let yw = self.view_plane.pixel_size * (y - 0.5 * (h - 1.0));
 
-        Ray::new(Point3D::new(xw, yw, ZW), DEFAULT_DIRECTION)
+        let origin = Point3D::new(xw, yw, ZW);
+        vec![self.cast_ray(&origin, xy)]
     }
 }
 

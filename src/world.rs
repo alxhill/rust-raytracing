@@ -12,18 +12,21 @@ pub use objects::*;
 pub use ray::*;
 use tracing::*;
 
-pub struct World<C: Camera> {
+pub struct World<C: RayCaster, R: RaySampler<C>> {
+    sampler: R,
     camera: C,
     objects: Vec<Box<dyn Hittable>>,
     view_plane: ViewPlane,
     pub bg_color: RGBColor,
 }
 
-impl World<PlanarCamera> {
-    pub fn default() -> World<PlanarCamera> {
+impl World<PlanarCamera, PlanarCamera> {
+    pub fn default() -> World<PlanarCamera, PlanarCamera> {
         let view_plane = ViewPlane::new(128, 128, 1.0);
-        let w: World<PlanarCamera> = World {
-            camera: PlanarCamera::default(view_plane),
+        let camera = PlanarCamera::default(view_plane);
+        let w = World {
+            sampler: camera,
+            camera,
             objects: Vec::new(),
             view_plane,
             bg_color: RGBColor::BLACK,
@@ -32,7 +35,7 @@ impl World<PlanarCamera> {
     }
 }
 
-impl<C: Camera> World<C> {
+impl<C: RayCaster, R: RaySampler<C>> World<C, R> {
     pub fn add(&mut self, obj: Box<dyn Hittable>) {
         self.objects.push(obj)
     }
@@ -43,10 +46,12 @@ impl<C: Camera> World<C> {
 
     pub fn render_to<T: Renderable>(&self, img: &mut T) {
         self.view_plane.for_each_pixel(|xy| {
-            let ray = self.camera.get_ray(&xy);
-            // normalise the color using gamma
-            let color = self.render_pixel(&ray) ^ self.view_plane.inv_gamma;
-            img.set_pixel(xy, &color);
+            let rays = self.sampler.rays_for_pixel(&xy);
+            for ray in rays {
+                // normalise the color using gamma
+                let color = self.render_pixel(&ray) ^ self.view_plane.inv_gamma;
+                img.set_pixel(xy, &color);
+            }
         });
     }
 
