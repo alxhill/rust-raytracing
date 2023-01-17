@@ -11,6 +11,7 @@ use crate::types::*;
 use crate::world::*;
 use pixel_canvas::input::MouseState;
 use pixel_canvas::Canvas;
+use std::io::Write;
 
 fn main() {
     println!("Starting execution.");
@@ -28,7 +29,7 @@ fn main() {
         RGBColor::BLACK,
     )));
 
-    let flag = std::env::args().nth(1).unwrap_or("--output".to_string());
+    let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
 
     match flag.as_str() {
         "--display" => {
@@ -41,6 +42,7 @@ fn main() {
             println!("Starting display.");
             canvas.render(move |_, image| {
                 print!(".");
+                std::io::stdout().flush().unwrap();
                 render_count += 1;
                 if render_count % 100 == 0 {
                     print!("\n");

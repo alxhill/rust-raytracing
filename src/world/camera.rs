@@ -3,7 +3,7 @@ use crate::world::viewplane::ViewXY;
 use crate::world::{Ray, ViewPlane};
 
 #[derive(Debug, Copy, Clone)]
-pub struct FlatCamera {
+pub struct PlanarCamera {
     view_plane: ViewPlane,
 }
 
@@ -25,7 +25,7 @@ pub trait Camera {
 const DEFAULT_DIRECTION: Vector3D = Vector3D::new(0.0, 0.0, -1.0);
 const ZW: Double = 100.0;
 
-impl Camera for FlatCamera {
+impl Camera for PlanarCamera {
     fn get_ray(&self, xy: &ViewXY) -> Ray {
         let (x, y) = (xy.x() as Double, xy.y() as Double);
         let (w, h) = (
@@ -39,8 +39,8 @@ impl Camera for FlatCamera {
     }
 }
 
-impl FlatCamera {
-    pub fn default(view_plane: ViewPlane) -> FlatCamera {
-        FlatCamera { view_plane }
+impl PlanarCamera {
+    pub fn default(view_plane: ViewPlane) -> PlanarCamera {
+        PlanarCamera { view_plane }
     }
 }

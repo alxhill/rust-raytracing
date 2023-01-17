@@ -19,11 +19,11 @@ pub struct World<C: Camera> {
     pub bg_color: RGBColor,
 }
 
-impl World<FlatCamera> {
-    pub fn default() -> World<FlatCamera> {
+impl World<PlanarCamera> {
+    pub fn default() -> World<PlanarCamera> {
         let view_plane = ViewPlane::new(128, 128, 1.0);
-        let w: World<FlatCamera> = World {
-            camera: FlatCamera::default(view_plane),
+        let w: World<PlanarCamera> = World {
+            camera: PlanarCamera::default(view_plane),
             objects: Vec::new(),
             view_plane,
             bg_color: RGBColor::BLACK,
