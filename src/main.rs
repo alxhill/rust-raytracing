@@ -16,18 +16,20 @@ use std::io::Write;
 fn main() {
     println!("Starting execution.");
 
-    let mut w = World::default();
-    w.add(Box::new(Sphere::new(Point3D::zero(), 40.0, RGBColor::RED)));
-    w.add(Box::new(Sphere::new(
+    let mut s = Scene::new();
+
+    s.add(Box::new(Sphere::new(Point3D::zero(), 40.0, RGBColor::RED)));
+    s.add(Box::new(Sphere::new(
         Point3D::new(0.0, 20.0, -1.0),
         30.0,
         RGBColor::YELLOW,
     )));
-    w.add(Box::new(Plane::new(
+    s.add(Box::new(Plane::new(
         Point3D::zero(),
         Vector3D::new(0.0, 1.0, 1.0),
         RGBColor::BLACK,
     )));
+    let mut w = World::new(s);
 
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
 

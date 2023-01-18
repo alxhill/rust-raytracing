@@ -16,6 +16,13 @@ impl ViewXY {
 }
 
 #[derive(Debug, Copy, Clone)]
+pub struct Screen {
+    pub width: Double,
+    pub height: Double,
+    pub pixel_size: Double,
+}
+
+#[derive(Debug, Copy, Clone)]
 pub struct ViewPlane {
     pub width: X,
     pub height: Y,

@@ -1,6 +1,7 @@
 mod camera;
 mod objects;
 mod ray;
+mod scene;
 mod tracing;
 mod viewplane;
 
@@ -10,66 +11,51 @@ pub use crate::world::viewplane::*;
 pub use camera::*;
 pub use objects::*;
 pub use ray::*;
+pub use scene::*;
+use std::rc::Rc;
 use tracing::*;
 
-pub struct World<C: RayCaster, R: RaySampler<C>> {
-    sampler: R,
+pub struct World<C: Camera, P: PointMapper> {
     camera: C,
-    objects: Vec<Box<dyn Hittable>>,
-    view_plane: ViewPlane,
+    scene: Scene,
+    point_mapper: Rc<P>,
+    view_plane: Rc<ViewPlane>,
     pub bg_color: RGBColor,
 }
 
-impl World<PlanarCamera, PlanarCamera> {
-    pub fn default() -> World<PlanarCamera, PlanarCamera> {
-        let view_plane = ViewPlane::new(128, 128, 1.0);
-        let camera = PlanarCamera::default(view_plane);
+impl World<PlanarCamera, ViewPlane> {
+    pub fn new(scene: Scene) -> World<PlanarCamera, ViewPlane> {
+        let view_plane = Rc::new(ViewPlane::new(128, 128, 1.0));
         let w = World {
-            sampler: camera,
-            camera,
-            objects: Vec::new(),
-            view_plane,
+            camera: PlanarCamera::default(),
+            scene,
+            point_mapper: view_plane.clone(),
+            view_plane: view_plane.clone(),
             bg_color: RGBColor::BLACK,
         };
         return w;
     }
 }
 
-impl<C: RayCaster, R: RaySampler<C>> World<C, R> {
-    pub fn add(&mut self, obj: Box<dyn Hittable>) {
-        self.objects.push(obj)
-    }
-
-    pub fn objects(&self) -> &Vec<Box<dyn Hittable>> {
-        &self.objects
-    }
-
+impl<C: Camera, P: PointMapper> World<C, P> {
     pub fn render_to<T: Renderable>(&self, img: &mut T) {
         self.view_plane.for_each_pixel(|xy| {
-            let rays = self.sampler.rays_for_pixel(&xy);
-            for ray in rays {
-                // normalise the color using gamma
-                let color = self.render_pixel(&ray) ^ self.view_plane.inv_gamma;
-                img.set_pixel(xy, &color);
+            let mut pixel_color = RGBColor::BLACK;
+            let points = self.point_mapper.points_for_pixel(&xy);
+            for point in points.iter() {
+                let ray = self.camera.ray_for_point(&point);
+                // add the normalised color using gamma
+                pixel_color += self.render_pixel(&ray) ^ self.view_plane.inv_gamma;
             }
+            pixel_color = pixel_color / points.len();
+            img.set_pixel(&xy, &pixel_color);
         });
     }
 
     fn render_pixel(&self, ray: &Ray) -> RGBColor {
-        let mut curr_hit: Option<Hit> = None;
-        for obj in self.objects() {
-            let maybe_hit = obj.hit(&ray);
-            match (maybe_hit, curr_hit) {
-                (Some(new_hit), None) => curr_hit = Some(new_hit),
-                (Some(new_hit), Some(prev_hit)) if new_hit.t < prev_hit.t => {
-                    curr_hit = Some(new_hit)
-                }
-                (Some(_), Some(_)) | (None, _) => {}
-            }
+        if let Some(hit) = self.scene.hit(ray) {
+            return hit.color;
         }
-        match curr_hit {
-            Some(h) => h.color,
-            None => self.bg_color,
-        }
+        return self.scene.bg_color;
     }
 }

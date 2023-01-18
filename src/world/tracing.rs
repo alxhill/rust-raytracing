@@ -1,5 +1,6 @@
 use crate::types::{Double, Point3D, RGBColor, Vector3D};
 use crate::world::*;
+use std::fmt::Debug;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Hit {
@@ -22,10 +23,6 @@ impl Hit {
     pub const EPSILON: Double = 1e-6;
 }
 
-pub trait Hittable {
+pub trait Hittable: Debug {
     fn hit(&self, ray: &Ray) -> Option<Hit>;
-}
-
-pub trait Tracer {
-    fn trace(&self, ray: &Ray, depth: u32) -> RGBColor;
 }

@@ -1,6 +1,6 @@
 use crate::types::Double;
 use image::Rgb;
-use std::ops::BitXor;
+use std::ops::{Add, AddAssign, BitXor, Div};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct RGBColor {
@@ -46,5 +46,30 @@ impl BitXor<Double> for RGBColor {
 
     fn bitxor(self, rhs: Double) -> Self::Output {
         RGBColor::new(self.r.powf(rhs), self.g.powf(rhs), self.b.powf(rhs))
+    }
+}
+
+impl Add for RGBColor {
+    type Output = RGBColor;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        RGBColor::new(self.r + rhs.r, self.g + rhs.g, self.b + rhs.b)
+    }
+}
+
+impl AddAssign for RGBColor {
+    fn add_assign(&mut self, rhs: Self) {
+        self.r += rhs.r;
+        self.g += rhs.g;
+        self.b += rhs.b;
+    }
+}
+
+impl Div<usize> for RGBColor {
+    type Output = RGBColor;
+
+    fn div(self, rhs: usize) -> Self::Output {
+        let val = rhs as Double;
+        RGBColor::new(self.r / val, self.g / val, self.b / val)
     }
 }

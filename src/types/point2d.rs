@@ -3,8 +3,8 @@ use utils::diff_sq;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Point2D {
-    x: Double,
-    y: Double,
+    pub x: Double,
+    pub y: Double,
 }
 
 impl Point2D {
