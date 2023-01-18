@@ -1,6 +1,42 @@
 use crate::types::{Double, Point2D, Point3D, Vector3D};
 use crate::world::Ray;
 
+#[derive(Copy, Clone, Debug)]
+pub struct CameraPosition {
+    eye: Point3D,
+    look_at: Point3D,
+    up: Vector3D,
+    distance: Double,
+    uvw: (Vector3D, Vector3D, Vector3D),
+}
+
+impl CameraPosition {
+    pub fn new(eye: Point3D, look_at: Point3D, up: Vector3D, distance: Double) -> CameraPosition {
+        let w = (eye - look_at).normalize();
+        let u = (up ^ w).normalize();
+        let v = w ^ u;
+        CameraPosition {
+            eye,
+            look_at,
+            up,
+            distance,
+            uvw: (u, v, w),
+        }
+    }
+
+    pub fn move_by(&mut self, dir: &Vector3D) {
+        self.eye = self.eye + *dir;
+        self.update_uvw();
+    }
+
+    fn update_uvw(&mut self) {
+        let w = (self.eye - self.look_at).normalize();
+        let u = (self.up ^ w).normalize();
+        let v = w ^ u;
+        self.uvw = (u, v, w);
+    }
+}
+
 pub trait Camera {
     fn ray_for_point(&self, point: &Point2D) -> Ray;
     fn position(&mut self) -> &mut CameraPosition;
@@ -68,41 +104,5 @@ impl Camera for PerspectiveCamera {
 
     fn position(&mut self) -> &mut CameraPosition {
         &mut self.position
-    }
-}
-
-#[derive(Copy, Clone, Debug)]
-pub struct CameraPosition {
-    eye: Point3D,
-    look_at: Point3D,
-    up: Vector3D,
-    distance: Double,
-    uvw: (Vector3D, Vector3D, Vector3D),
-}
-
-impl CameraPosition {
-    pub fn new(eye: Point3D, look_at: Point3D, up: Vector3D, distance: Double) -> CameraPosition {
-        let w = (eye - look_at).normalize();
-        let u = (up ^ w).normalize();
-        let v = w ^ u;
-        CameraPosition {
-            eye,
-            look_at,
-            up,
-            distance,
-            uvw: (u, v, w),
-        }
-    }
-
-    pub fn move_by(&mut self, dir: &Vector3D) {
-        self.eye = self.eye + *dir;
-        self.update_uvw();
-    }
-
-    fn update_uvw(&mut self) {
-        let w = (self.eye - self.look_at).normalize();
-        let u = (self.up ^ w).normalize();
-        let v = w ^ u;
-        self.uvw = (u, v, w);
     }
 }
