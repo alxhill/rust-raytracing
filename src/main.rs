@@ -31,7 +31,7 @@ fn main() {
     )));
 
     let plane = ViewPlane::new(256, 256, 0.5);
-    let camera = PerspectiveCamera::new(-100.0, 100.0);
+    let mut camera = PerspectiveCamera::new(-100.0, 100.0);
     let sampler = JitteredSampler::new(plane, 4);
 
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
@@ -53,6 +53,7 @@ fn main() {
                 if render_count % 100 == 0 {
                     print!("\n");
                 }
+                camera.move_by(Vector3D::new(0.0, 0.0, -0.5));
                 render_to(
                     &scene,
                     &plane,
