@@ -29,7 +29,9 @@ fn main() {
         Vector3D::new(0.0, 1.0, 1.0),
         RGBColor::BLACK,
     )));
-    let mut w = World::new(s);
+
+    let plane = ViewPlane::new(128, 128, 1.0);
+    let w = World::new(s, plane, RegularSampler::new(plane));
 
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
 
