@@ -53,7 +53,7 @@ fn main() {
                 if render_count % 100 == 0 {
                     print!("\n");
                 }
-                camera.move_by(&Vector3D::new(0.0, 0.0, -0.5));
+                camera.position().move_by(&Vector3D::new(0.0, 0.0, -0.5));
                 render_to(
                     &scene,
                     &plane,

@@ -33,6 +33,12 @@ impl Vector3D {
         self.z = self.z / length;
         *self
     }
+
+    pub const UP: Vector3D = Vector3D {
+        x: 0.0,
+        y: 1.0,
+        z: 0.0,
+    };
 }
 
 impl Distance for Vector3D {

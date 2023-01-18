@@ -3,39 +3,42 @@ use crate::world::Ray;
 
 pub trait Camera {
     fn ray_for_point(&self, point: &Point2D) -> Ray;
-    fn move_by(&mut self, dir: &Vector3D);
+    fn position(&mut self) -> &mut CameraPosition;
 }
 
 #[derive(Debug, Copy, Clone)]
 pub struct OrthoCamera {
-    direction: Vector3D,
-    zw: Double,
+    position: CameraPosition,
 }
 
 impl OrthoCamera {
     pub fn default() -> OrthoCamera {
         OrthoCamera {
-            direction: Vector3D::new(0.0, 0.0, -1.0),
-            zw: 100.0,
+            position: CameraPosition::new(
+                Point3D::new(0.0, 0.0, 100.0),
+                Point3D::new(0.0, 0.0, 0.0),
+                Vector3D::new(0.0, 1.0, 0.0),
+                100.0,
+            ),
         }
     }
 }
 
 impl Camera for OrthoCamera {
     fn ray_for_point(&self, point: &Point2D) -> Ray {
-        let origin = Point3D::new(point.x, point.y, self.zw);
-        Ray::new(origin, self.direction)
+        let origin = self.position.eye + Point3D::new(point.x, point.y, 0.0);
+        let direction = (self.position.look_at - self.position.eye).normalize();
+        Ray::new(origin, direction)
     }
 
-    fn move_by(&mut self, _dir: &Vector3D) {
-        todo!()
+    fn position(&mut self) -> &mut CameraPosition {
+        &mut self.position
     }
 }
 
 #[derive(Copy, Clone, Debug)]
 pub struct PerspectiveCamera {
-    eye: Point3D,
-    distance: Double,
+    position: CameraPosition,
 }
 
 impl PerspectiveCamera {
@@ -45,8 +48,12 @@ impl PerspectiveCamera {
 
     pub fn new(eye_dist: Double, plane_dist: Double) -> PerspectiveCamera {
         PerspectiveCamera {
-            eye: Point3D::new(0.0, 0.0, eye_dist),
-            distance: plane_dist,
+            position: CameraPosition::new(
+                Point3D::new(0.0, 0.0, eye_dist),
+                Point3D::new(0.0, 0.0, 0.0),
+                Vector3D::UP,
+                plane_dist,
+            ),
         }
     }
 }
@@ -54,17 +61,18 @@ impl PerspectiveCamera {
 impl Camera for PerspectiveCamera {
     fn ray_for_point(&self, point: &Point2D) -> Ray {
         Ray::new(
-            self.eye,
-            Vector3D::new(point.x, point.y, self.distance).normalize(),
+            self.position.eye,
+            Vector3D::new(point.x, point.y, self.position.distance).normalize(),
         )
     }
 
-    fn move_by(&mut self, dir: &Vector3D) {
-        self.eye = self.eye + *dir;
+    fn position(&mut self) -> &mut CameraPosition {
+        &mut self.position
     }
 }
 
-struct CameraPosition {
+#[derive(Copy, Clone, Debug)]
+pub struct CameraPosition {
     eye: Point3D,
     look_at: Point3D,
     up: Vector3D,
@@ -84,5 +92,17 @@ impl CameraPosition {
             distance,
             uvw: (u, v, w),
         }
+    }
+
+    pub fn move_by(&mut self, dir: &Vector3D) {
+        self.eye = self.eye + *dir;
+        self.update_uvw();
+    }
+
+    fn update_uvw(&mut self) {
+        let w = (self.eye - self.look_at).normalize();
+        let u = (self.up ^ w).normalize();
+        let v = w ^ u;
+        self.uvw = (u, v, w);
     }
 }
