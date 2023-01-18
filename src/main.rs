@@ -39,7 +39,7 @@ fn main() {
     match flag.as_str() {
         "--display" => {
             let canvas = Canvas::new(plane.width as usize, plane.height as usize)
-                .title("Tile")
+                .title("Ray Tracer")
                 .show_ms(true)
                 .state(MouseState::new())
                 .input(MouseState::handle_input);
@@ -53,7 +53,7 @@ fn main() {
                 if render_count % 100 == 0 {
                     print!("\n");
                 }
-                camera.move_by(Vector3D::new(0.0, 0.0, -0.5));
+                camera.move_by(&Vector3D::new(0.0, 0.0, -0.5));
                 render_to(
                     &scene,
                     &plane,

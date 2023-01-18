@@ -3,7 +3,7 @@ use crate::world::Ray;
 
 pub trait Camera {
     fn ray_for_point(&self, point: &Point2D) -> Ray;
-    fn move_by(&mut self, dir: Vector3D);
+    fn move_by(&mut self, dir: &Vector3D);
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -27,7 +27,7 @@ impl Camera for OrthoCamera {
         Ray::new(origin, self.direction)
     }
 
-    fn move_by(&mut self, dir: Vector3D) {
+    fn move_by(&mut self, _dir: &Vector3D) {
         todo!()
     }
 }
@@ -59,7 +59,30 @@ impl Camera for PerspectiveCamera {
         )
     }
 
-    fn move_by(&mut self, dir: Vector3D) {
-        self.eye = self.eye + dir;
+    fn move_by(&mut self, dir: &Vector3D) {
+        self.eye = self.eye + *dir;
+    }
+}
+
+struct CameraPosition {
+    eye: Point3D,
+    look_at: Point3D,
+    up: Vector3D,
+    distance: Double,
+    uvw: (Vector3D, Vector3D, Vector3D),
+}
+
+impl CameraPosition {
+    pub fn new(eye: Point3D, look_at: Point3D, up: Vector3D, distance: Double) -> CameraPosition {
+        let w = (eye - look_at).normalize();
+        let u = (up ^ w).normalize();
+        let v = w ^ u;
+        CameraPosition {
+            eye,
+            look_at,
+            up,
+            distance,
+            uvw: (u, v, w),
+        }
     }
 }
