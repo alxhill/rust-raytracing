@@ -24,10 +24,10 @@ pub struct RegularSampler {
 }
 
 impl RegularSampler {
-    pub fn new(view_plane: ViewPlane) -> RegularSampler {
+    pub fn new(view_plane: ViewPlane, samples: u32) -> RegularSampler {
         RegularSampler {
             view_plane,
-            samples: 16,
+            samples,
         }
     }
 }
@@ -62,10 +62,10 @@ pub struct JitteredSampler {
 }
 
 impl JitteredSampler {
-    pub fn new(view_plane: ViewPlane) -> JitteredSampler {
+    pub fn new(view_plane: ViewPlane, samples: u32) -> JitteredSampler {
         JitteredSampler {
             view_plane,
-            samples: 16,
+            samples,
         }
     }
 }

@@ -38,6 +38,7 @@ impl RGBColor {
     pub const RED: RGBColor = RGBColor::new(1.0, 0.0, 0.0);
     pub const GREEN: RGBColor = RGBColor::new(0.0, 1.0, 0.0);
     pub const YELLOW: RGBColor = RGBColor::new(1.0, 1.0, 0.0);
+    pub const GREY: RGBColor = RGBColor::new(0.5, 0.5, 0.5);
     pub const BLACK: RGBColor = RGBColor::new(0.0, 0.0, 0.0);
 }
 

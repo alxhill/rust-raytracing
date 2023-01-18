@@ -6,34 +6,51 @@ pub trait Camera {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub struct PlanarCamera {
+pub struct OrthoCamera {
     direction: Vector3D,
     zw: Double,
 }
 
-#[derive(Copy, Clone, Debug)]
-pub struct PerspectiveCamera {
-    eye: Point3D,
-    look_at: Point3D,
-    up: Vector3D,
-    exposure_time: Double,
-    u: Option<Vector3D>,
-    v: Option<Vector3D>,
-    w: Option<Vector3D>,
+impl OrthoCamera {
+    pub fn default() -> OrthoCamera {
+        OrthoCamera {
+            direction: Vector3D::new(0.0, 0.0, -1.0),
+            zw: 100.0,
+        }
+    }
 }
 
-impl Camera for PlanarCamera {
+impl Camera for OrthoCamera {
     fn ray_for_point(&self, point: &Point2D) -> Ray {
         let origin = Point3D::new(point.x, point.y, self.zw);
         Ray::new(origin, self.direction)
     }
 }
 
-impl PlanarCamera {
-    pub fn default() -> PlanarCamera {
-        PlanarCamera {
-            direction: Vector3D::new(0.0, 0.0, -1.0),
-            zw: 100.0,
+#[derive(Copy, Clone, Debug)]
+pub struct PerspectiveCamera {
+    eye: Point3D,
+    distance: Double,
+}
+
+impl PerspectiveCamera {
+    pub fn default() -> PerspectiveCamera {
+        PerspectiveCamera::new(-100.0, 100.0)
+    }
+
+    pub fn new(eye_dist: Double, plane_dist: Double) -> PerspectiveCamera {
+        PerspectiveCamera {
+            eye: Point3D::new(0.0, 0.0, eye_dist),
+            distance: plane_dist,
         }
+    }
+}
+
+impl Camera for PerspectiveCamera {
+    fn ray_for_point(&self, point: &Point2D) -> Ray {
+        Ray::new(
+            self.eye,
+            Vector3D::new(point.x, point.y, self.distance).normalize(),
+        )
     }
 }

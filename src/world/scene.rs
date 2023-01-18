@@ -20,6 +20,13 @@ impl Scene {
     pub fn add(&mut self, object: Box<dyn Hittable>) {
         self.objects.push(object);
     }
+
+    pub fn render_pixel(&self, ray: &Ray) -> RGBColor {
+        if let Some(hit) = self.hit(ray) {
+            return hit.color;
+        }
+        return self.bg_color;
+    }
 }
 
 impl Hittable for Scene {
