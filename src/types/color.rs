@@ -1,6 +1,6 @@
 use crate::types::Double;
 use image::Rgb;
-use num_traits::{NumCast, NumOps};
+use num_traits::NumCast;
 use std::ops::{Add, AddAssign, BitXor, Div, Mul};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
