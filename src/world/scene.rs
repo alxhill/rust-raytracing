@@ -1,11 +1,11 @@
 use crate::types::RGBColor;
 use crate::world::tracing::{Hit, Hittable};
-use crate::world::Ray;
+use crate::world::{Object, Ray};
 use std::fmt::Debug;
 
 #[derive(Debug)]
 pub struct Scene {
-    objects: Vec<Box<dyn Hittable>>,
+    objects: Vec<Object>,
     pub bg_color: RGBColor,
 }
 
@@ -17,7 +17,7 @@ impl Scene {
         }
     }
 
-    pub fn add(&mut self, object: Box<dyn Hittable>) {
+    pub fn add(&mut self, object: Object) {
         self.objects.push(object);
     }
 
@@ -33,6 +33,9 @@ impl Hittable for Scene {
     fn hit(&self, ray: &Ray) -> Option<Hit> {
         let mut closest_hit: Option<Hit> = None;
         for object in &self.objects {
+            unsafe {
+                let y = *(*object).geometry;
+            }
             let maybe_hit = object.hit(&ray);
             match (maybe_hit, closest_hit) {
                 (Some(new_hit), None) => closest_hit = Some(new_hit),

@@ -1,14 +1,16 @@
 use crate::types::{Double, RGBColor, Vector3D};
 use crate::world::Hit;
+use std::fmt::Debug;
 
-pub trait BRDF {
+pub trait BRDF: Debug {
     fn f(&self, hit: &Hit, wi: &Vector3D, wo: &Vector3D) -> RGBColor;
     fn rho(&self, hit: &Hit, wo: &Vector3D) -> RGBColor;
 }
 
+#[derive(Debug)]
 pub struct Lambertian {
     kd: Double,
-    pub color: RGBColor,
+    color: RGBColor,
 }
 
 impl Lambertian {
