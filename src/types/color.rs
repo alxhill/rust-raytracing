@@ -1,6 +1,7 @@
 use crate::types::Double;
 use image::Rgb;
-use std::ops::{Add, AddAssign, BitXor, Div};
+use num_traits::{NumCast, NumOps};
+use std::ops::{Add, AddAssign, BitXor, Div, Mul};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct RGBColor {
@@ -66,11 +67,20 @@ impl AddAssign for RGBColor {
     }
 }
 
-impl Div<usize> for RGBColor {
+impl<T: NumCast> Div<T> for RGBColor {
     type Output = RGBColor;
 
-    fn div(self, rhs: usize) -> Self::Output {
-        let val = rhs as Double;
+    fn div(self, rhs: T) -> Self::Output {
+        let val: Double = num_traits::cast(rhs).unwrap();
         RGBColor::new(self.r / val, self.g / val, self.b / val)
+    }
+}
+
+impl<T: NumCast> Mul<T> for RGBColor {
+    type Output = RGBColor;
+
+    fn mul(self, rhs: T) -> Self::Output {
+        let val: Double = num_traits::cast(rhs).unwrap();
+        RGBColor::new(self.r * val, self.g * val, self.b * val)
     }
 }
