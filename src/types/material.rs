@@ -7,6 +7,17 @@ pub trait BRDF: Debug {
     fn rho(&self, hit: &Hit, wo: &Vector3D) -> RGBColor;
 }
 
+// for early implementation
+impl BRDF for RGBColor {
+    fn f(&self, _hit: &Hit, _wi: &Vector3D, _wo: &Vector3D) -> RGBColor {
+        self.clone()
+    }
+
+    fn rho(&self, _hit: &Hit, _wo: &Vector3D) -> RGBColor {
+        self.clone()
+    }
+}
+
 #[derive(Debug)]
 pub struct Lambertian {
     kd: Double,

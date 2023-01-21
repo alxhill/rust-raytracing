@@ -33,9 +33,6 @@ impl Hittable for Scene {
     fn hit(&self, ray: &Ray) -> Option<Hit> {
         let mut closest_hit: Option<Hit> = None;
         for object in &self.objects {
-            unsafe {
-                let y = *(*object).geometry;
-            }
             let maybe_hit = object.hit(&ray);
             match (maybe_hit, closest_hit) {
                 (Some(new_hit), None) => closest_hit = Some(new_hit),

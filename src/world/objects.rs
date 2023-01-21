@@ -9,6 +9,21 @@ pub struct Object {
     pub material: Arc<dyn BRDF>,
 }
 
+impl Object {
+    pub fn new(geometry: Box<dyn Hittable>, color: RGBColor) -> Object {
+        Object {
+            geometry,
+            material: Arc::new(color)
+        }
+    }
+}
+
+impl Hittable for Object {
+    fn hit(&self, ray: &Ray) -> Option<Hit> {
+        self.geometry.hit(ray)
+    }
+}
+
 #[derive(Copy, Clone, Debug)]
 pub struct Sphere {
     origin: Point3D,
@@ -16,12 +31,8 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(origin: Point3D, radius: Double, mat: Arc<dyn BRDF>) -> Object {
-        let sphere = Sphere { origin, radius };
-        Object {
-            geometry: Box::new(sphere),
-            material: mat,
-        }
+    pub fn new(origin: Point3D, radius: Double) -> Box<Sphere> {
+        Box::new(Sphere { origin, radius })
     }
 
     // todo: move this somewhere better
@@ -30,7 +41,6 @@ impl Sphere {
             t,
             ray.origin + (ray.direction * t),
             (ray.origin + (ray.direction * t) - self.origin).normalize(),
-            self.color,
         )
     }
 }
@@ -68,16 +78,14 @@ impl Hittable for Sphere {
 pub struct Plane {
     point: Point3D,
     normal: Vector3D,
-    color: RGBColor, // temporary
 }
 
 impl Plane {
-    pub fn new(point: Point3D, normal: Vector3D, color: RGBColor) -> Plane {
-        Plane {
+    pub fn new(point: Point3D, normal: Vector3D) -> Box<Plane> {
+        Box::new(Plane {
             point,
             normal,
-            color,
-        }
+        })
     }
 }
 
@@ -89,8 +97,7 @@ impl Hittable for Plane {
             return Some(Hit::hit(
                 t,
                 ray.origin + (ray.direction * t),
-                self.normal,
-                self.color,
+                self.normal
             ));
         }
         None

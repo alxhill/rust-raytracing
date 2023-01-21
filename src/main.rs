@@ -18,17 +18,17 @@ fn main() {
 
     let mut scene = Scene::new();
 
-    scene.add(Box::new(Sphere::new(Point3D::zero(), 40.0, RGBColor::RED)));
-    scene.add(Box::new(Sphere::new(
+    scene.add(Object::new(Sphere::new(Point3D::zero(), 40.0), RGBColor::RED));
+    scene.add(Object::new(Sphere::new(
         Point3D::new(0.0, 20.0, -1.0),
-        30.0,
-        RGBColor::YELLOW,
-    )));
-    scene.add(Box::new(Plane::new(
+        30.0),
+        RGBColor::YELLOW
+    ));
+    scene.add(Object::new(Plane::new(
         Point3D::new(0.0, -50.0, 0.0),
-        Vector3D::new(0.0, 1.0, 0.0),
+        Vector3D::new(0.0, 1.0, 0.0)),
         RGBColor::GREY,
-    )));
+    ));
 
     let plane = ViewPlane::new(256, 256, 0.5);
     let mut camera = PerspectiveCamera::new(-100.0, 100.0);

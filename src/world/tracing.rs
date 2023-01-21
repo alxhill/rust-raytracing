@@ -18,16 +18,14 @@ pub struct Hit {
     pub t: Double,
     hit_loc: Point3D,
     normal: Vector3D,
-    pub color: RGBColor,
 }
 
 impl Hit {
-    pub fn hit(dist: Double, hit_loc: Point3D, normal: Vector3D, color: RGBColor) -> Hit {
+    pub fn hit(dist: Double, hit_loc: Point3D, normal: Vector3D) -> Hit {
         Hit {
             t: dist,
             hit_loc,
             normal,
-            color,
         }
     }
 
