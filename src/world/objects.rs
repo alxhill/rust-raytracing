@@ -51,7 +51,7 @@ impl Hittable for Sphere {
         let small_root = (-b - discriminant.sqrt()) / (2.0 * a);
         let large_root = (-b + discriminant.sqrt()) / (2.0 * a);
 
-        if small_root > Hit::EPSILON && large_root > Hit::EPSILON {
+        if small_root > Hit::EPSILON || large_root > Hit::EPSILON {
             let t = small_root.min(large_root);
             let hit_loc = ray.origin + t * ray.direction;
             let normal = (hit_loc - self.origin).normalize();
