@@ -1,4 +1,4 @@
-use crate::types::{Double, Lambertian, Point3D, RGBColor, Vector3D, BRDF};
+use crate::types::{Double, Point3D, RGBColor, Vector3D, BRDF, Shadeable};
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::Ray;
 use std::sync::Arc;
@@ -6,7 +6,7 @@ use std::sync::Arc;
 #[derive(Debug)]
 pub struct Object {
     pub geometry: Box<dyn Hittable>,
-    pub material: Arc<dyn BRDF>,
+    pub material: Arc<dyn Shadeable>,
 }
 
 impl Object {
@@ -34,15 +34,6 @@ impl Sphere {
     pub fn new(origin: Point3D, radius: Double) -> Box<Sphere> {
         Box::new(Sphere { origin, radius })
     }
-
-    // todo: move this somewhere better
-    fn get_hit(&self, ray: &Ray, t: Double) -> Hit {
-        Hit::hit(
-            t,
-            ray.origin + (ray.direction * t),
-            (ray.origin + (ray.direction * t) - self.origin).normalize(),
-        )
-    }
 }
 
 impl Hittable for Sphere {
@@ -61,14 +52,22 @@ impl Hittable for Sphere {
         let mut t: Double = (-b - discriminant.sqrt()) / (2.0 * a);
 
         if t > Hit::EPSILON {
-            return Some(self.get_hit(ray, t));
+            return Some(Hit::hit(
+                t,
+                ray.origin + (ray.direction * t),
+                (ray.origin + (ray.direction * t) - self.origin).normalize(),
+            ));
         }
 
         // larger root
         t = (-b + discriminant.sqrt()) / (2.0 * a);
 
         if t > Hit::EPSILON {
-            return Some(self.get_hit(ray, t));
+            return Some(Hit::hit(
+                t,
+                ray.origin + (ray.direction * t),
+                (ray.origin + (ray.direction * t) - self.origin).normalize(),
+            ));
         }
         None
     }

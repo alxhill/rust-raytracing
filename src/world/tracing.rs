@@ -1,5 +1,7 @@
-use crate::types::{Double, Point3D, RGBColor, Vector3D};
+use crate::types::{Double, Point3D, Vector3D};
 use std::fmt::Debug;
+use std::sync::Arc;
+use crate::world::Object;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Ray {
@@ -13,20 +15,26 @@ impl Ray {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct Hit {
     pub t: Double,
-    hit_loc: Point3D,
-    normal: Vector3D,
+    pub hit_loc: Point3D,
+    pub normal: Vector3D,
+    pub object: Option<Arc<Object>>
 }
 
 impl Hit {
-    pub fn hit(dist: Double, hit_loc: Point3D, normal: Vector3D) -> Hit {
+    pub fn hit(dist: Double, hit_loc: Point3D, normal: Vector3D, object: Option<Arc<Object>>) -> Hit {
         Hit {
             t: dist,
             hit_loc,
             normal,
+            object,
         }
+    }
+
+    pub fn set_obj(&mut self, object: Arc<Object>) {
+        self.object = Some(object)
     }
 
     pub const EPSILON: Double = 1e-6;
