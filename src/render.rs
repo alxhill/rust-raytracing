@@ -7,11 +7,11 @@ pub use crate::render::canvas::CanvasRender;
 pub use crate::render::image::ImageRender;
 use crate::world::{Camera, Sampler, Scene, ViewPlane, ViewXY};
 
-pub trait Renderable {
+pub trait RenderTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor);
 }
 
-pub fn render_to<T: Renderable, S: Sampler, C: Camera>(
+pub fn render_to<T: RenderTarget, S: Sampler, C: Camera>(
     scene: &Scene,
     view_plane: &ViewPlane,
     sampler: &S,

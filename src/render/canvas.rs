@@ -1,4 +1,4 @@
-use crate::render::Renderable;
+use crate::render::RenderTarget;
 use crate::types::RGBColor;
 use crate::world::ViewXY;
 use pixel_canvas::{Color, Image, XY};
@@ -19,7 +19,7 @@ impl ViewXY {
     }
 }
 
-impl Renderable for CanvasRender<'_> {
+impl RenderTarget for CanvasRender<'_> {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
         let rgb = color.to_rgb();
         self.canvas_img[xy.to_xy()] = Color {

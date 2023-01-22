@@ -1,4 +1,4 @@
-use crate::render::Renderable;
+use crate::render::RenderTarget;
 use crate::types::RGBColor;
 use crate::world::ViewXY;
 use image::{ImageBuffer, Rgb};
@@ -19,7 +19,7 @@ impl ImageRender {
     }
 }
 
-impl Renderable for ImageRender {
+impl RenderTarget for ImageRender {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
         self.buffer.put_pixel(xy.x(), xy.y(), color.to_rgb());
     }
