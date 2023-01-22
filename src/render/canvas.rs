@@ -3,13 +3,13 @@ use crate::types::RGBColor;
 use crate::world::ViewXY;
 use pixel_canvas::{Color, Image, XY};
 
-pub struct CanvasRender<'a> {
+pub struct CanvasTarget<'a> {
     canvas_img: &'a mut Image,
 }
 
-impl CanvasRender<'_> {
-    pub fn new(img: &mut Image) -> CanvasRender {
-        CanvasRender { canvas_img: img }
+impl CanvasTarget<'_> {
+    pub fn new(img: &mut Image) -> CanvasTarget {
+        CanvasTarget { canvas_img: img }
     }
 }
 
@@ -19,7 +19,7 @@ impl ViewXY {
     }
 }
 
-impl RenderTarget for CanvasRender<'_> {
+impl RenderTarget for CanvasTarget<'_> {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
         let rgb = color.to_rgb();
         self.canvas_img[xy.to_xy()] = Color {

@@ -3,8 +3,8 @@ use crate::types::RGBColor;
 mod canvas;
 mod image;
 
-pub use crate::render::canvas::CanvasRender;
-pub use crate::render::image::ImageRender;
+pub use crate::render::canvas::CanvasTarget;
+pub use crate::render::image::ImageTarget;
 use crate::world::{Camera, Sampler, Scene, ViewPlane, ViewXY};
 
 pub trait RenderTarget {

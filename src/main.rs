@@ -6,7 +6,7 @@ mod render;
 mod types;
 mod world;
 
-use crate::render::{render_to, CanvasRender, ImageRender};
+use crate::render::{render_to, CanvasTarget, ImageTarget};
 use crate::types::*;
 use crate::world::*;
 use pixel_canvas::input::MouseState;
@@ -18,15 +18,16 @@ fn main() {
 
     let mut scene = Scene::new();
 
-    scene.add(Object::new(Sphere::new(Point3D::zero(), 40.0), RGBColor::RED));
-    scene.add(Object::new(Sphere::new(
-        Point3D::new(0.0, 20.0, -1.0),
-        30.0),
-        RGBColor::YELLOW
+    scene.add(Object::new(
+        Sphere::new(Point3D::zero(), 40.0),
+        RGBColor::RED,
     ));
-    scene.add(Object::new(Plane::new(
-        Point3D::new(0.0, -50.0, 0.0),
-        Vector3D::new(0.0, 1.0, 0.0)),
+    scene.add(Object::new(
+        Sphere::new(Point3D::new(0.0, 20.0, -1.0), 30.0),
+        RGBColor::YELLOW,
+    ));
+    scene.add(Object::new(
+        Plane::new(Point3D::new(0.0, -50.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
         RGBColor::GREY,
     ));
 
@@ -59,12 +60,12 @@ fn main() {
                     &plane,
                     &sampler,
                     &camera,
-                    &mut CanvasRender::new(image),
+                    &mut CanvasTarget::new(image),
                 );
             });
         }
         "--output" => {
-            let mut render = ImageRender::new(plane.width, plane.height);
+            let mut render = ImageTarget::new(plane.width, plane.height);
             render_to(&scene, &plane, &sampler, &camera, &mut render);
             render.save_image("output.png".to_string());
         }
