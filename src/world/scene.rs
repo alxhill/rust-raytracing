@@ -24,7 +24,8 @@ impl Scene {
 
     pub fn render_pixel(&self, ray: &Ray) -> RGBColor {
         if let Some(hit) = self.hit(ray) {
-            return hit.object.unwrap().material.shade(&hit);
+            let hit2 = hit.clone();
+            return hit.object.unwrap().material.shade(hit2);
         }
         return self.bg_color;
     }
@@ -40,7 +41,8 @@ impl Hittable for Scene {
                     new_hit.set_obj(Arc::clone(object));
                     closest_hit = Some(new_hit)
                 },
-                (Some(new_hit), Some(prev_hit)) if new_hit.t < prev_hit.t => {
+                (Some(mut new_hit), Some(prev_hit)) if new_hit.t < prev_hit.t => {
+                    new_hit.set_obj(Arc::clone(object));
                     closest_hit = Some(new_hit)
                 }
                 (Some(_), Some(_)) | (None, _) => {}

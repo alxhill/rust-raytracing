@@ -3,7 +3,7 @@ use crate::world::Hit;
 use std::fmt::Debug;
 
 pub trait Shadeable: Debug {
-    fn shade(&self, hit: &Hit) -> RGBColor;
+    fn shade(&self, hit: Hit) -> RGBColor;
 }
 
 pub trait BRDF: Debug {
@@ -13,7 +13,7 @@ pub trait BRDF: Debug {
 
 // for initial implementation
 impl Shadeable for RGBColor {
-    fn shade(&self, _hit: &Hit) -> RGBColor {
+    fn shade(&self, _hit: Hit) -> RGBColor {
         self.clone()
     }
 }

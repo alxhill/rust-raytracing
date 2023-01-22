@@ -20,16 +20,18 @@ pub struct Hit {
     pub t: Double,
     pub hit_loc: Point3D,
     pub normal: Vector3D,
+    // todo: deprecate Object and find cleaner way
+    // to pass around material info
     pub object: Option<Arc<Object>>
 }
 
 impl Hit {
-    pub fn hit(dist: Double, hit_loc: Point3D, normal: Vector3D, object: Option<Arc<Object>>) -> Hit {
+    pub fn hit(dist: Double, hit_loc: Point3D, normal: Vector3D) -> Hit {
         Hit {
             t: dist,
             hit_loc,
             normal,
-            object,
+            object: None,
         }
     }
 
