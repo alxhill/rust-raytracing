@@ -1,4 +1,4 @@
-use crate::types::{Double, Point3D, RGBColor, Vector3D, BRDF, Shadeable};
+use crate::types::{Double, Point3D, RGBColor, Shadeable, Vector3D, BRDF};
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::Ray;
 use std::sync::Arc;
@@ -13,7 +13,7 @@ impl Object {
     pub fn new(geometry: Box<dyn Hittable>, color: RGBColor) -> Object {
         Object {
             geometry,
-            material: Arc::new(color)
+            material: Arc::new(color),
         }
     }
 }
@@ -48,27 +48,16 @@ impl Hittable for Sphere {
             return None;
         }
 
-        // smaller root
-        let mut t: Double = (-b - discriminant.sqrt()) / (2.0 * a);
+        let small_root = (-b - discriminant.sqrt()) / (2.0 * a);
+        let large_root = (-b + discriminant.sqrt()) / (2.0 * a);
 
-        if t > Hit::EPSILON {
-            return Some(Hit::hit(
-                t,
-                ray.origin + (ray.direction * t),
-                (ray.origin + (ray.direction * t) - self.origin).normalize(),
-            ));
+        if small_root > Hit::EPSILON && large_root > Hit::EPSILON {
+            let t = small_root.min(large_root);
+            let hit_loc = ray.origin + t * ray.direction;
+            let normal = (hit_loc - self.origin).normalize();
+            return Some(Hit::hit(t, hit_loc, normal));
         }
 
-        // larger root
-        t = (-b + discriminant.sqrt()) / (2.0 * a);
-
-        if t > Hit::EPSILON {
-            return Some(Hit::hit(
-                t,
-                ray.origin + (ray.direction * t),
-                (ray.origin + (ray.direction * t) - self.origin).normalize(),
-            ));
-        }
         None
     }
 }
@@ -81,10 +70,7 @@ pub struct Plane {
 
 impl Plane {
     pub fn new(point: Point3D, normal: Vector3D) -> Box<Plane> {
-        Box::new(Plane {
-            point,
-            normal,
-        })
+        Box::new(Plane { point, normal })
     }
 }
 
@@ -93,11 +79,7 @@ impl Hittable for Plane {
         let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 
         if t > Hit::EPSILON {
-            return Some(Hit::hit(
-                t,
-                ray.origin + (ray.direction * t),
-                self.normal
-            ));
+            return Some(Hit::hit(t, ray.origin + (ray.direction * t), self.normal));
         }
         None
     }
