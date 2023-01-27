@@ -84,3 +84,11 @@ impl<T: NumCast> Mul<T> for RGBColor {
         RGBColor::new(self.r * val, self.g * val, self.b * val)
     }
 }
+
+impl Mul for RGBColor {
+    type Output = RGBColor;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        RGBColor::new(self.r * rhs.r, self.g * rhs.g, self.b * rhs.b)
+    }
+}

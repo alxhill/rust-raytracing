@@ -30,4 +30,21 @@ pub struct Light {
 }
 
 impl Light {
+    pub fn point_at(point: Point3D, look_at: Point3D, ls: Double) -> Light {
+        Light {
+            color: RGBColor::WHITE,
+            direction: look_at - point,
+            location: point,
+            shadows: false,
+            ls
+        }
+    }
+
+    pub fn direction(&self) -> Vector3D {
+        self.direction
+    }
+
+    pub fn L(&self) -> RGBColor {
+        self.color * self.ls
+    }
 }

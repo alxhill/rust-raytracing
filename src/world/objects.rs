@@ -1,4 +1,4 @@
-use crate::types::{Double, Point3D, RGBColor, Shadeable, Vector3D, BRDF};
+use crate::types::{Double, Point3D, RGBColor, Shadeable, Vector3D};
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::Ray;
 use std::sync::Arc;
@@ -10,10 +10,10 @@ pub struct Object {
 }
 
 impl Object {
-    pub fn new(geometry: Box<dyn Hittable>, color: RGBColor) -> Object {
+    pub fn new(geometry: Box<dyn Hittable>, material: Arc<dyn Shadeable>) -> Object {
         Object {
             geometry,
-            material: Arc::new(color),
+            material,
         }
     }
 }

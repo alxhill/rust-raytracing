@@ -12,24 +12,30 @@ use crate::world::*;
 use pixel_canvas::input::MouseState;
 use pixel_canvas::Canvas;
 use std::io::Write;
+use std::sync::Arc;
 
 fn main() {
     println!("Starting execution.");
 
     let mut scene = Scene::new();
 
-    scene.add(Object::new(
+    let red_mat = Arc::new(Matte::new(0.5, 0.1, RGBColor::RED));
+    let yellow_mat = Arc::new(Matte::new(0.2, 0.3, RGBColor::YELLOW));
+    let grey_mat = Arc::new(Matte::new(0.1, 0.5, RGBColor::GREY));
+    scene.add_object(Object::new(
         Sphere::new(Point3D::zero(), 40.0),
-        RGBColor::RED,
+        red_mat,
     ));
-    scene.add(Object::new(
+    scene.add_object(Object::new(
         Sphere::new(Point3D::new(0.0, 20.0, -1.0), 30.0),
-        RGBColor::YELLOW,
+        yellow_mat
     ));
-    scene.add(Object::new(
+    scene.add_object(Object::new(
         Plane::new(Point3D::new(0.0, -50.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
-        RGBColor::GREY,
+        grey_mat,
     ));
+    scene.add_light(Light::point_at(Point3D::new(50.0, 50.0, 0.0), Point3D::zero(), 0.4));
+    scene.add_light(Light::point_at(Point3D::new(-60.0, -100.0, 0.0), Point3D::zero(), 0.2));
 
     let plane = ViewPlane::new(256, 256, 0.5);
     let mut camera = PerspectiveCamera::new(-100.0, 100.0);

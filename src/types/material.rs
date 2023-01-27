@@ -1,10 +1,9 @@
 use crate::types::{Double, RGBColor, Vector3D};
-use crate::world::Hit;
+use crate::world::{Hit, Light};
 use std::fmt::Debug;
-use std::sync::Arc;
 
 pub trait Shadeable: Debug {
-    fn shade(&self, hit: Hit) -> RGBColor;
+    fn shade(&self, hit: Hit, lights: &Vec<Light>) -> RGBColor;
 }
 
 pub trait BRDF: Debug {
@@ -28,14 +27,23 @@ impl Matte {
 }
 
 impl Shadeable for Matte {
-    fn shade(&self, hit: Hit) -> RGBColor {
-        let wo = -hit
+    fn shade(&self, hit: Hit, lights: &Vec<Light>) -> RGBColor {
+        let wo = -hit.ray.direction;
+        let mut l = self.ambient.rho(&hit, &wo);
+        for light in lights.iter() {
+            let wi = light.direction();
+            let ndotwi = hit.normal * wi;
+            if ndotwi > 0.0 {
+                l += self.diffuse.f(&hit, &wo, &wi) * light.L() * ndotwi;
+            }
+        }
+        l
     }
 }
 
 // for initial implementation
 impl Shadeable for RGBColor {
-    fn shade(&self, _hit: Hit) -> RGBColor {
+    fn shade(&self, _hit: Hit, _lights: &Vec<Light>) -> RGBColor {
         *self
     }
 }

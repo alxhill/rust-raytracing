@@ -8,7 +8,7 @@ use std::sync::Arc;
 pub struct Scene {
     objects: Vec<Arc<Object>>,
     ambient_light: AmbientLight,
-    lights: Vec<Arc<Light>>,
+    lights: Vec<Light>,
     pub bg_color: RGBColor,
 }
 
@@ -22,18 +22,18 @@ impl Scene {
         }
     }
 
-    pub fn add(&mut self, object: Object) {
+    pub fn add_object(&mut self, object: Object) {
         self.objects.push(Arc::new(object));
     }
 
     pub fn add_light(&mut self, light: Light) {
-        self.lights.push(Arc::new(light));
+        self.lights.push(light);
     }
 
     pub fn render_color(&self, ray: &Ray) -> RGBColor {
         if let Some(hit) = self.hit(ray) {
             let hit2 = hit.clone();
-            return hit.object.unwrap().material.shade(hit2);
+            return hit.object.unwrap().material.shade(hit2, &self.lights);
         }
         self.bg_color
     }
