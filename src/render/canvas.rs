@@ -21,7 +21,7 @@ impl ViewXY {
 
 impl RenderTarget for CanvasTarget<'_> {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
-        let rgb = color.to_rgb();
+        let rgb = color.as_rgb();
         self.canvas_img[xy.to_xy()] = Color {
             r: rgb[0],
             g: rgb[1],

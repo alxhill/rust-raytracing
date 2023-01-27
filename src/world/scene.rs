@@ -1,12 +1,14 @@
 use crate::types::RGBColor;
 use crate::world::tracing::{Hit, Hittable};
-use crate::world::{Object, Ray};
+use crate::world::{AmbientLight, Light, Object, Ray};
 use std::fmt::Debug;
 use std::sync::Arc;
 
 #[derive(Debug)]
 pub struct Scene {
     objects: Vec<Arc<Object>>,
+    ambient_light: AmbientLight,
+    lights: Vec<Arc<Light>>,
     pub bg_color: RGBColor,
 }
 
@@ -14,6 +16,8 @@ impl Scene {
     pub fn new() -> Scene {
         Scene {
             objects: Vec::new(),
+            ambient_light: AmbientLight::default(),
+            lights: Vec::new(),
             bg_color: RGBColor::BLACK,
         }
     }
@@ -22,12 +26,16 @@ impl Scene {
         self.objects.push(Arc::new(object));
     }
 
-    pub fn render_pixel(&self, ray: &Ray) -> RGBColor {
+    pub fn add_light(&mut self, light: Light) {
+        self.lights.push(Arc::new(light));
+    }
+
+    pub fn render_color(&self, ray: &Ray) -> RGBColor {
         if let Some(hit) = self.hit(ray) {
             let hit2 = hit.clone();
             return hit.object.unwrap().material.shade(hit2);
         }
-        return self.bg_color;
+        self.bg_color
     }
 }
 

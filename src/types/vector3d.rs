@@ -23,15 +23,19 @@ impl Vector3D {
     pub fn normal(x: Double, y: Double, z: Double) -> Vector3D {
         let mut v = Vector3D::new(x, y, z);
         v.normalize();
-        return v;
+        v
     }
 
     pub fn normalize(&mut self) -> Vector3D {
-        let length: Double = (self.x * self.x + self.y * self.y + self.z * self.z).sqrt();
-        self.x = self.x / length;
-        self.y = self.y / length;
-        self.z = self.z / length;
+        let length = self.magnitude();
+        self.x /= length;
+        self.y /= length;
+        self.z /= length;
         *self
+    }
+
+    pub fn magnitude(&self) -> Double {
+        (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
 
     pub const UP: Vector3D = Vector3D {

@@ -23,7 +23,7 @@ impl RGBColor {
         }
     }
 
-    pub fn to_u8(&self) -> [u8; 3] {
+    pub fn as_u8(&self) -> [u8; 3] {
         [
             (self.r * 255.0) as u8,
             (self.g * 255.0) as u8,
@@ -31,8 +31,8 @@ impl RGBColor {
         ]
     }
 
-    pub fn to_rgb(&self) -> Rgb<u8> {
-        Rgb(self.to_u8())
+    pub fn as_rgb(&self) -> Rgb<u8> {
+        Rgb(self.as_u8())
     }
 
     pub const WHITE: RGBColor = RGBColor::new(1.0, 1.0, 1.0);

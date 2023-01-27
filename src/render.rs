@@ -23,7 +23,7 @@ pub fn render_to<T: RenderTarget, S: Sampler, C: Camera>(
         let points = sampler.points_for_pixel(&xy);
         for point in points.iter() {
             let ray = camera.ray_for_point(&point);
-            pixel_color += scene.render_pixel(&ray);
+            pixel_color += scene.render_color(&ray);
         }
         pixel_color = pixel_color / points.len() ^ view_plane.inv_gamma;
         img.set_pixel(&xy, &pixel_color);

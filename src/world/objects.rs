@@ -55,7 +55,7 @@ impl Hittable for Sphere {
             let t = small_root.min(large_root);
             let hit_loc = ray.origin + t * ray.direction;
             let normal = (hit_loc - self.origin).normalize();
-            return Some(Hit::hit(t, hit_loc, normal));
+            return Some(Hit::new(t, hit_loc, *ray, normal));
         }
 
         None
@@ -79,7 +79,7 @@ impl Hittable for Plane {
         let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 
         if t > Hit::EPSILON {
-            return Some(Hit::hit(t, ray.origin + (ray.direction * t), self.normal));
+            return Some(Hit::new(t, ray.origin + (ray.direction * t), *ray, self.normal));
         }
         None
     }

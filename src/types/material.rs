@@ -1,6 +1,7 @@
 use crate::types::{Double, RGBColor, Vector3D};
 use crate::world::Hit;
 use std::fmt::Debug;
+use std::sync::Arc;
 
 pub trait Shadeable: Debug {
     fn shade(&self, hit: Hit) -> RGBColor;
@@ -11,10 +12,31 @@ pub trait BRDF: Debug {
     fn rho(&self, hit: &Hit, wo: &Vector3D) -> RGBColor;
 }
 
+#[derive(Debug)]
+pub struct Matte {
+    ambient: Box<dyn BRDF>,
+    diffuse: Box<dyn BRDF>,
+}
+
+impl Matte {
+    pub fn new(ka: Double, kd: Double, cd: RGBColor) -> Matte {
+        Matte {
+            ambient: Box::new(Lambertian::new(ka, cd)),
+            diffuse: Box::new(Lambertian::new(kd, cd))
+        }
+    }
+}
+
+impl Shadeable for Matte {
+    fn shade(&self, hit: Hit) -> RGBColor {
+        let wo = -hit
+    }
+}
+
 // for initial implementation
 impl Shadeable for RGBColor {
     fn shade(&self, _hit: Hit) -> RGBColor {
-        self.clone()
+        *self
     }
 }
 
