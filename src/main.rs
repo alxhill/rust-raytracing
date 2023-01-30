@@ -20,8 +20,8 @@ fn main() {
     let mut scene = Scene::new();
 
     let red_mat = Arc::new(Matte::new(0.25, 0.65, RGBColor::RED));
-    let yellow_mat = Arc::new(Matte::new(0.2, 0.3, RGBColor::YELLOW));
-    let grey_mat = Arc::new(Matte::new(0.1, 0.5, RGBColor::GREY));
+    let yellow_mat = Arc::new(Matte::new(0.2, 0.8, RGBColor::YELLOW));
+    let grey_mat = Arc::new(Matte::new(0.5, 0.5, RGBColor::GREY));
     scene.add_object(Object::new(
         Sphere::new(Point3D::zero(), 40.0),
         red_mat,
