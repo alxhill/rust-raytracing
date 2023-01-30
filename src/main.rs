@@ -35,7 +35,7 @@ fn main() {
         grey_mat,
     ));
     scene.add_light(Light::point_light(Point3D::new(50.0, 50.0, 0.0), 3.0));
-    scene.add_light(Light::point_light(Point3D::new(-60.0, -100.0, 0.0), 1.5));
+    scene.add_light(Light::point_light(Point3D::new(-60.0, -100.0, 0.0), 2.0));
 
     let plane = ViewPlane::new(256, 256, 0.5);
     let mut camera = PinholeCamera::new(-100.0, 100.0);
@@ -58,7 +58,7 @@ fn main() {
                 std::io::stdout().flush().unwrap();
                 render_count += 1;
                 if render_count % 100 == 0 {
-                    print!("\n");
+                    println!();
                 }
                 camera.position().move_by(&Vector3D::new(0.0, 0.0, -0.5));
                 render_to(
@@ -75,6 +75,6 @@ fn main() {
             render_to(&scene, &plane, &sampler, &camera, &mut render);
             render.save_image("output.png".to_string());
         }
-        _ => println!("Invalid flag: {}", flag),
+        _ => println!("Invalid flag: {flag}"),
     }
 }
