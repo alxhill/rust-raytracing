@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 use crate::types::RGBColor;
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::{AmbientLight, Light, Object, Ray};

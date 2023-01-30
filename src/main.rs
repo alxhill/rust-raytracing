@@ -19,7 +19,7 @@ fn main() {
 
     let mut scene = Scene::new();
 
-    let red_mat = Arc::new(Matte::new(0.5, 0.1, RGBColor::RED));
+    let red_mat = Arc::new(Matte::new(0.25, 0.65, RGBColor::RED));
     let yellow_mat = Arc::new(Matte::new(0.2, 0.3, RGBColor::YELLOW));
     let grey_mat = Arc::new(Matte::new(0.1, 0.5, RGBColor::GREY));
     scene.add_object(Object::new(
@@ -34,11 +34,11 @@ fn main() {
         Plane::new(Point3D::new(0.0, -50.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
         grey_mat,
     ));
-    scene.add_light(Light::point_at(Point3D::new(50.0, 50.0, 0.0), Point3D::zero(), 0.4));
-    scene.add_light(Light::point_at(Point3D::new(-60.0, -100.0, 0.0), Point3D::zero(), 0.2));
+    scene.add_light(Light::point_light(Point3D::new(50.0, 50.0, 0.0), 3.0));
+    scene.add_light(Light::point_light(Point3D::new(-60.0, -100.0, 0.0), 1.5));
 
     let plane = ViewPlane::new(256, 256, 0.5);
-    let mut camera = PerspectiveCamera::new(-100.0, 100.0);
+    let mut camera = PinholeCamera::new(-100.0, 100.0);
     let sampler = JitteredSampler::new(plane, 4);
 
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());

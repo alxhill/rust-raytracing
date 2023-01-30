@@ -31,7 +31,7 @@ impl Shadeable for Matte {
         let wo = -hit.ray.direction;
         let mut l = self.ambient.rho(&hit, &wo);
         for light in lights.iter() {
-            let wi = light.direction();
+            let wi = light.direction(&hit.hit_loc);
             let ndotwi = hit.normal * wi;
             if ndotwi > 0.0 {
                 l += self.diffuse.f(&hit, &wo, &wi) * light.L() * ndotwi;

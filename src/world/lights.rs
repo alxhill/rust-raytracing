@@ -23,25 +23,23 @@ impl AmbientLight{
 #[derive(Debug, Copy, Clone)]
 pub struct Light {
     color: RGBColor,
-    direction: Vector3D,
     location: Point3D,
     shadows: bool,
     ls: Double // may become a material in future
 }
 
 impl Light {
-    pub fn point_at(point: Point3D, look_at: Point3D, ls: Double) -> Light {
+    pub fn point_light(point: Point3D, ls: Double) -> Light {
         Light {
             color: RGBColor::WHITE,
-            direction: look_at - point,
             location: point,
             shadows: false,
             ls
         }
     }
 
-    pub fn direction(&self) -> Vector3D {
-        self.direction
+    pub fn direction(&self, hit_point: &Point3D) -> Vector3D {
+        (self.location - *hit_point).normalize()
     }
 
     pub fn L(&self) -> RGBColor {

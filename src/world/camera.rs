@@ -73,17 +73,17 @@ impl Camera for OrthoCamera {
 }
 
 #[derive(Copy, Clone, Debug)]
-pub struct PerspectiveCamera {
+pub struct PinholeCamera {
     position: CameraPosition,
 }
 
-impl PerspectiveCamera {
-    pub fn default() -> PerspectiveCamera {
-        PerspectiveCamera::new(-100.0, 100.0)
+impl PinholeCamera {
+    pub fn default() -> PinholeCamera {
+        PinholeCamera::new(-100.0, 100.0)
     }
 
-    pub fn new(eye_dist: Double, plane_dist: Double) -> PerspectiveCamera {
-        PerspectiveCamera {
+    pub fn new(eye_dist: Double, plane_dist: Double) -> PinholeCamera {
+        PinholeCamera {
             position: CameraPosition::new(
                 Point3D::new(0.0, 0.0, eye_dist),
                 Point3D::new(0.0, 0.0, 0.0),
@@ -94,7 +94,7 @@ impl PerspectiveCamera {
     }
 }
 
-impl Camera for PerspectiveCamera {
+impl Camera for PinholeCamera {
     fn ray_for_point(&self, point: &Point2D) -> Ray {
         Ray::new(
             self.position.eye,
