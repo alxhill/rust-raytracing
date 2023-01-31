@@ -39,7 +39,7 @@ fn main() {
 
     let plane = ViewPlane::new(256, 256, 0.5);
     let mut camera = PinholeCamera::new(-100.0, 100.0);
-    let sampler = JitteredSampler::new(plane, 4);
+    let sampler = JitteredSampler::new(plane, 16);
 
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
 

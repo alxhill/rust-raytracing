@@ -13,5 +13,4 @@ pub use point2d::Point2D;
 pub use point3d::Point3D;
 pub use vector3d::Vector3D;
 
-pub type Float = f32;
 pub type Double = f64;

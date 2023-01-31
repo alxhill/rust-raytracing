@@ -9,3 +9,5 @@ num-traits = "0.2.15"
 pixel-canvas = "0.2.3"
 rand = "0.8.5"
 
+[profile.dev]
+opt-level = 3
