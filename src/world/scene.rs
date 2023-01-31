@@ -1,14 +1,12 @@
-use std::borrow::Borrow;
 use crate::types::RGBColor;
 use crate::world::tracing::{Hit, Hittable};
-use crate::world::{AmbientLight, Light, Object, Ray};
+use crate::world::{Light, Object, Ray};
 use std::fmt::Debug;
 use std::sync::Arc;
 
 #[derive(Debug)]
 pub struct Scene {
     objects: Vec<Arc<Object>>,
-    ambient_light: AmbientLight,
     lights: Vec<Light>,
     pub bg_color: RGBColor,
 }
@@ -17,7 +15,6 @@ impl Scene {
     pub fn new() -> Scene {
         Scene {
             objects: Vec::new(),
-            ambient_light: AmbientLight::default(),
             lights: Vec::new(),
             bg_color: RGBColor::BLACK,
         }

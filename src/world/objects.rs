@@ -1,4 +1,4 @@
-use crate::types::{Double, Point3D, RGBColor, Shadeable, Vector3D};
+use crate::types::{Double, Point3D, Shadeable, Vector3D};
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::Ray;
 use std::sync::Arc;

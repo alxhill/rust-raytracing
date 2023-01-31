@@ -15,7 +15,3 @@ pub use vector3d::Vector3D;
 
 pub type Float = f32;
 pub type Double = f64;
-
-pub trait Clamp {
-    fn clamp(&self) -> Double;
-}

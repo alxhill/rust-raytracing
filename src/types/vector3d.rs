@@ -1,4 +1,4 @@
-use crate::types::{utils, Distance, Double};
+use crate::types::Double;
 use std::ops::{Add, BitXor, Div, Mul, Neg, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -43,15 +43,6 @@ impl Vector3D {
         y: 1.0,
         z: 0.0,
     };
-}
-
-impl Distance for Vector3D {
-    fn dist(&self, other: &Vector3D) -> Double {
-        (utils::diff_sq(self.x, other.x)
-            + utils::diff_sq(self.y, other.y)
-            + utils::diff_sq(self.z, other.z))
-        .sqrt()
-    }
 }
 
 // Scalar Multiplication

@@ -1,6 +1,5 @@
-use crate::types::{utils, Distance, Double, Vector3D};
+use crate::types::{Double, Vector3D};
 use std::ops::{Add, Mul, Sub};
-use utils::diff_sq;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Point3D {
@@ -19,12 +18,6 @@ impl Point3D {
     }
     pub fn new(x: Double, y: Double, z: Double) -> Point3D {
         Point3D { x, y, z }
-    }
-}
-
-impl Distance for Point3D {
-    fn dist(&self, other: &Point3D) -> Double {
-        (diff_sq(self.x, other.x) + diff_sq(self.y, other.y) + diff_sq(self.z, other.z)).sqrt()
     }
 }
 
