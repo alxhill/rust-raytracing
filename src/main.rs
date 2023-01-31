@@ -22,6 +22,7 @@ fn main() {
     let red_mat = Arc::new(Matte::new(0.25, 0.65, RGBColor::RED));
     let yellow_mat = Arc::new(Matte::new(0.2, 0.8, RGBColor::YELLOW));
     let grey_mat = Arc::new(Matte::new(0.5, 0.5, RGBColor::GREY));
+    let green_mat = Arc::new(Matte::new(0.2, 0.7, RGBColor::GREEN));
     scene.add_object(Object::new(
         Sphere::new(Point3D::zero(), 40.0),
         red_mat,
@@ -33,6 +34,14 @@ fn main() {
     scene.add_object(Object::new(
         Plane::new(Point3D::new(0.0, -50.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
         grey_mat,
+    ));
+    scene.add_object(Object::new(
+        Sphere::new(Point3D::new(-40.0, 25.0, -2.0), 15.0),
+        green_mat.clone()
+    ));
+    scene.add_object(Object::new(
+        Sphere::new(Point3D::new(40.0, 15.0, -2.0), 15.0),
+        green_mat
     ));
     scene.add_light(Light::point_light(Point3D::new(50.0, 50.0, 0.0), 3.0));
     scene.add_light(Light::point_light(Point3D::new(-60.0, -100.0, 0.0), 2.0));
