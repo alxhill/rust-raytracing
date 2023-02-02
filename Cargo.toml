@@ -10,4 +10,4 @@ pixel-canvas = "0.2.3"
 rand = "0.8.5"
 
 [profile.dev]
-opt-level = 3
+opt-level = 2

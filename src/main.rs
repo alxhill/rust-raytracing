@@ -46,9 +46,9 @@ fn main() {
     scene.add_light(Light::point_light(Point3D::new(50.0, 50.0, 0.0), 3.0));
     scene.add_light(Light::point_light(Point3D::new(-60.0, -100.0, 0.0), 2.0));
 
-    let plane = ViewPlane::new(256, 256, 0.5);
+    let plane = ViewPlane::new(512, 512, 0.25);
     let mut camera = PinholeCamera::new(-100.0, 100.0);
-    let sampler = JitteredSampler::new(plane, 16);
+    let sampler = JitteredSampler::new(plane, 8);
 
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
 
