@@ -18,6 +18,7 @@ pub struct Matte {
 }
 
 impl Matte {
+    #[inline(always)]
     pub fn new(ka: Double, kd: Double, cd: RGBColor) -> Matte {
         Matte {
             ambient: Box::new(Lambertian::new(ka, cd)),

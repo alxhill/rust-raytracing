@@ -4,12 +4,12 @@ use crate::world::Ray;
 use std::sync::Arc;
 
 #[derive(Debug)]
-pub struct Object {
-    pub geometry: Box<dyn Hittable>,
+pub struct Object<'a> {
+    pub geometry: bumpalo::boxed::Box<dyn Hittable<'a>>,
     pub material: Arc<dyn Shadeable>,
 }
 
-impl Object {
+impl Object<'_> {
     pub fn new(geometry: Box<dyn Hittable>, material: Arc<dyn Shadeable>) -> Object {
         Object {
             geometry,
@@ -18,7 +18,7 @@ impl Object {
     }
 }
 
-impl Hittable for Object {
+impl Hittable<'_> for Object<'_> {
     fn hit(&self, ray: &Ray) -> Option<Hit> {
         self.geometry.hit(ray)
     }
@@ -31,12 +31,13 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(origin: Point3D, radius: Double) -> Box<Sphere> {
-        Box::new(Sphere { origin, radius })
+    #[inline(always)]
+    pub fn new(origin: Point3D, radius: Double) -> Sphere {
+        Sphere { origin, radius }
     }
 }
 
-impl Hittable for Sphere {
+impl Hittable<'_> for Sphere {
     fn hit(&self, ray: &Ray) -> Option<Hit> {
         let oc: Vector3D = ray.origin - self.origin;
         let a: Double = ray.direction * ray.direction;
@@ -74,7 +75,7 @@ impl Plane {
     }
 }
 
-impl Hittable for Plane {
+impl Hittable<'_> for Plane {
     fn hit(&self, ray: &Ray) -> Option<Hit> {
         let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 

@@ -46,6 +46,6 @@ impl Hit {
     pub const EPSILON: Double = 1e-6;
 }
 
-pub trait Hittable: Debug {
+pub trait Hittable<'a>: Debug {
     fn hit(&self, ray: &Ray) -> Option<Hit>;
 }

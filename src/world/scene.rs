@@ -5,13 +5,13 @@ use std::fmt::Debug;
 use std::sync::Arc;
 
 #[derive(Debug)]
-pub struct Scene {
-    objects: Vec<Arc<Object>>,
+pub struct Scene<'a> {
+    objects: Vec<& 'a Object<'a>>,
     lights: Vec<Light>,
     pub bg_color: RGBColor,
 }
 
-impl Scene {
+impl Scene<'_> {
     pub fn new() -> Scene {
         Scene {
             objects: Vec::new(),
