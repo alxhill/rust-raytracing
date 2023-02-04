@@ -8,11 +8,7 @@ image = "0.24.5"
 num-traits = "0.2.15"
 pixel-canvas = "0.2.3"
 rand = "0.8.5"
-bumpalo = "3.12.0"
+bumpalo = {version = "3.12.0", features = ["boxed", "collections"]}
 
 [profile.dev]
 opt-level = 2
-
-[features]
-collections = []
-boxed = []

@@ -2,26 +2,27 @@ use crate::types::RGBColor;
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::{Light, Object, Ray};
 use std::fmt::Debug;
-use std::sync::Arc;
+use bumpalo::Bump;
+use bumpalo::collections::Vec;
 
 #[derive(Debug)]
-pub struct Scene<'a> {
-    objects: Vec<& 'a Object<'a>>,
-    lights: Vec<Light>,
+pub struct Scene<'w> {
+    objects: Vec<'w, & 'w Object<'w>>,
+    lights: Vec<'w, Light>,
     pub bg_color: RGBColor,
 }
 
-impl Scene<'_> {
-    pub fn new() -> Scene {
+impl<'w> Scene<'w> {
+    pub fn new(arena: &Bump) -> Scene<'w> {
         Scene {
-            objects: Vec::new(),
-            lights: Vec::new(),
+            objects: Vec::new_in(arena),
+            lights: Vec::new_in(arena),
             bg_color: RGBColor::BLACK,
         }
     }
 
-    pub fn add_object(&mut self, object: Object) {
-        self.objects.push(Arc::new(object));
+    pub fn add_object(&mut self, object: &'w Object<'w>) {
+        self.objects.push(object);
     }
 
     pub fn add_light(&mut self, light: Light) {
@@ -37,18 +38,18 @@ impl Scene<'_> {
     }
 }
 
-impl Hittable for Scene {
-    fn hit(&self, ray: &Ray) -> Option<Hit> {
+impl<'t> Hittable<'t> for Scene<'t> {
+    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
         let mut closest_hit: Option<Hit> = None;
         for object in &self.objects {
             let maybe_hit = object.hit(&ray);
             match (maybe_hit, &closest_hit) {
                 (Some(mut new_hit), None) => {
-                    new_hit.set_obj(Arc::clone(object));
+                    new_hit.set_obj(object);
                     closest_hit = Some(new_hit)
                 },
                 (Some(mut new_hit), Some(prev_hit)) if new_hit.t < prev_hit.t => {
-                    new_hit.set_obj(Arc::clone(object));
+                    new_hit.set_obj(object);
                     closest_hit = Some(new_hit)
                 }
                 (Some(_), Some(_)) | (None, _) => {}

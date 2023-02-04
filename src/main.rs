@@ -19,37 +19,38 @@ fn main() {
 
     let mut scene_arena = bumpalo::Bump::new();
 
-    let mut scene = Scene::new();
+    let mut scene = Scene::new(&scene_arena);
 
     let red_mat = scene_arena.alloc(Matte::new(0.25, 0.65, RGBColor::RED));
-    let sphere1 = scene_arena.alloc(Sphere::new(Point3D::zero(), 40.0));
+    let sphere_geom_1 = scene_arena.alloc(Sphere::new(Point3D::zero(), 40.0));
+    let sphere_obj = scene_arena.alloc(Object::new(sphere_geom_1, red_mat));
 
+    scene.add_object(sphere_obj);
 
-
-    let yellow_mat = Arc::new(Matte::new(0.2, 0.8, RGBColor::YELLOW));
-    let grey_mat = Arc::new(Matte::new(0.5, 0.5, RGBColor::GREY));
-    let green_mat = Arc::new(Matte::new(0.2, 0.7, RGBColor::GREEN));
-
-    scene.add_object(Object::new(
-        Sphere::new(Point3D::zero(), 40.0),
-        red_mat,
-    ));
-    scene.add_object(Object::new(
-        Sphere::new(Point3D::new(0.0, 20.0, -1.0), 30.0),
-        yellow_mat
-    ));
-    scene.add_object(Object::new(
-        Plane::new(Point3D::new(0.0, -50.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
-        grey_mat,
-    ));
-    scene.add_object(Object::new(
-        Sphere::new(Point3D::new(-40.0, 25.0, -2.0), 15.0),
-        green_mat.clone()
-    ));
-    scene.add_object(Object::new(
-        Sphere::new(Point3D::new(40.0, 15.0, -2.0), 15.0),
-        green_mat
-    ));
+    // let yellow_mat = Arc::new(Matte::new(0.2, 0.8, RGBColor::YELLOW));
+    // let grey_mat = Arc::new(Matte::new(0.5, 0.5, RGBColor::GREY));
+    // let green_mat = Arc::new(Matte::new(0.2, 0.7, RGBColor::GREEN));
+    //
+    // scene.add_object(Object::new(
+    //     Sphere::new(Point3D::zero(), 40.0),
+    //     red_mat,
+    // ));
+    // scene.add_object(Object::new(
+    //     Sphere::new(Point3D::new(0.0, 20.0, -1.0), 30.0),
+    //     yellow_mat
+    // ));
+    // scene.add_object(Object::new(
+    //     Plane::new(Point3D::new(0.0, -50.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
+    //     grey_mat,
+    // ));
+    // scene.add_object(Object::new(
+    //     Sphere::new(Point3D::new(-40.0, 25.0, -2.0), 15.0),
+    //     green_mat.clone()
+    // ));
+    // scene.add_object(Object::new(
+    //     Sphere::new(Point3D::new(40.0, 15.0, -2.0), 15.0),
+    //     green_mat
+    // ));
     scene.add_light(Light::point_light(Point3D::new(50.0, 50.0, 0.0), 3.0));
     scene.add_light(Light::point_light(Point3D::new(-60.0, -100.0, 0.0), 2.0));
 

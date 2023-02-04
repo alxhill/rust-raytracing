@@ -1,16 +1,15 @@
 use crate::types::{Double, Point3D, Shadeable, Vector3D};
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::Ray;
-use std::sync::Arc;
 
 #[derive(Debug)]
-pub struct Object<'a> {
-    pub geometry: bumpalo::boxed::Box<dyn Hittable<'a>>,
-    pub material: Arc<dyn Shadeable>,
+pub struct Object<'w> {
+    pub geometry: &'w dyn Hittable<'w>,
+    pub material: &'w dyn Shadeable,
 }
 
-impl Object<'_> {
-    pub fn new(geometry: Box<dyn Hittable>, material: Arc<dyn Shadeable>) -> Object {
+impl<'w> Object<'w> {
+    pub fn new(geometry: &dyn Hittable, material: &dyn Shadeable) -> Object<'w> {
         Object {
             geometry,
             material,
@@ -18,8 +17,8 @@ impl Object<'_> {
     }
 }
 
-impl Hittable<'_> for Object<'_> {
-    fn hit(&self, ray: &Ray) -> Option<Hit> {
+impl<'t> Hittable<'t> for Object<'t> {
+    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
         self.geometry.hit(ray)
     }
 }
@@ -37,8 +36,8 @@ impl Sphere {
     }
 }
 
-impl Hittable<'_> for Sphere {
-    fn hit(&self, ray: &Ray) -> Option<Hit> {
+impl<'t> Hittable<'t> for Sphere {
+    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
         let oc: Vector3D = ray.origin - self.origin;
         let a: Double = ray.direction * ray.direction;
         let b: Double = 2.0 * (oc * ray.direction);
@@ -70,13 +69,13 @@ pub struct Plane {
 }
 
 impl Plane {
-    pub fn new(point: Point3D, normal: Vector3D) -> Box<Plane> {
-        Box::new(Plane { point, normal })
+    pub fn new(point: Point3D, normal: Vector3D) -> Plane {
+        Plane { point, normal }
     }
 }
 
-impl Hittable<'_> for Plane {
-    fn hit(&self, ray: &Ray) -> Option<Hit> {
+impl<'t> Hittable<'t> for Plane {
+    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
         let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 
         if t > Hit::EPSILON {
