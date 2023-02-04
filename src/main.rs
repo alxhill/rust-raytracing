@@ -24,7 +24,7 @@ fn main() {
 
     let light1 = scene_arena.alloc(Light::point_light(Point3D::new(50.0, 50.0, 0.0), 3.0));
 
-    let mut scene = Scene::new(&scene_arena);
+    let scene = Scene::new(&scene_arena);
     scene.add_object(sphere_obj);
     scene.add_light(light1);
 
