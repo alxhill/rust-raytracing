@@ -3,8 +3,10 @@ use crate::types::RGBColor;
 use crate::world::ViewXY;
 use image::{ImageBuffer, Rgb};
 
+pub type RtImageBuffer = ImageBuffer<Rgb<u8>, Vec<u8>>;
+
 pub struct ImageTarget {
-    buffer: ImageBuffer<Rgb<u8>, Vec<u8>>,
+    pub buffer: RtImageBuffer
 }
 
 impl ImageTarget {
@@ -17,6 +19,7 @@ impl ImageTarget {
     pub fn save_image(&self, name: String) {
         self.buffer.save(name).expect("Failed to save image");
     }
+
 }
 
 impl RenderTarget for ImageTarget {

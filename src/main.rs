@@ -6,7 +6,7 @@ mod render;
 mod types;
 mod world;
 
-use crate::render::{render_to, CanvasTarget, ImageTarget};
+use crate::render::{render_to, CanvasTarget, ImageTarget, copy_to};
 use crate::types::*;
 use crate::world::*;
 use pixel_canvas::input::MouseState;
@@ -59,26 +59,30 @@ fn main() {
     let mut camera = PinholeCamera::new(-100.0, 100.0);
     let sampler = JitteredSampler::new(plane, 8);
 
+    let mut render = ImageTarget::new(plane.width, plane.height);
+    render_to(scene, &plane, &sampler, &camera, &mut render);
+
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
 
     match flag.as_str() {
         "--display" => {
             let canvas = Canvas::new(plane.width as usize, plane.height as usize)
                 .title("Ray Tracer")
-                .show_ms(true)
+                .show_ms(false)
                 .state(MouseState::new())
                 .input(MouseState::handle_input);
 
-            let mut render_count: u32 = 0;
+            // let mut render_count: u32 = 0;
             println!("Starting display.");
             canvas.render(move |_, image| {
-                print!(".");
-                std::io::stdout().flush().unwrap();
-                render_count += 1;
-                if render_count % 100 == 0 {
-                    println!();
-                }
-                camera.position().move_by(&Vector3D::new(0.0, 0.0, -0.5));
+                copy_to(&render.buffer, &mut CanvasTarget::new(image));
+                // print!(".");
+                // std::io::stdout().flush().unwrap();
+                // render_count += 1;
+                // if render_count % 100 == 0 {
+                //     println!();
+                // }
+                // camera.position().move_by(&Vector3D::new(0.0, 0.0, -0.5));
                 // render_to(
                 //     &scene,
                 //     &plane,
@@ -89,8 +93,6 @@ fn main() {
             });
         }
         "--output" => {
-            let mut render = ImageTarget::new(plane.width, plane.height);
-            render_to(scene, &plane, &sampler, &camera, &mut render);
             render.save_image("output.png".to_string());
         }
         _ => println!("Invalid flag: {flag}"),
