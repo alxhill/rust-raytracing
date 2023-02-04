@@ -12,7 +12,7 @@ pub trait RenderTarget {
 }
 
 pub fn render_to<T: RenderTarget, S: Sampler, C: Camera>(
-    scene: Scene,
+    scene: &Scene,
     view_plane: &ViewPlane,
     sampler: &S,
     camera: &C,
@@ -20,12 +20,12 @@ pub fn render_to<T: RenderTarget, S: Sampler, C: Camera>(
 ) {
     view_plane.for_each_pixel(|xy| {
         let mut pixel_color = RGBColor::BLACK;
-        let points = sampler.points_for_pixel(&xy);
+        let points = sampler.points_for_pixel(xy);
         for point in points.iter() {
-            let ray = camera.ray_for_point(&point);
+            let ray = camera.ray_for_point(point);
             pixel_color += scene.render_color(&ray);
         }
-        pixel_color = pixel_color / points.len() ^ view_plane.inv_gamma;
-        img.set_pixel(&xy, &pixel_color);
+        pixel_color = (pixel_color / points.len()) ^ view_plane.inv_gamma;
+        img.set_pixel(xy, &pixel_color);
     });
 }

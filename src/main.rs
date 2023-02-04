@@ -90,7 +90,7 @@ fn main() {
         }
         "--output" => {
             let mut render = ImageTarget::new(plane.width, plane.height);
-            render_to(*scene, &plane, &sampler, &camera, &mut render);
+            render_to(scene, &plane, &sampler, &camera, &mut render);
             render.save_image("output.png".to_string());
         }
         _ => println!("Invalid flag: {flag}"),
