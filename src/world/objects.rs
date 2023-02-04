@@ -4,12 +4,12 @@ use crate::world::Ray;
 
 #[derive(Debug)]
 pub struct Object<'w> {
-    pub geometry: &'w dyn Hittable<'w>,
+    pub geometry: &'w (dyn Hittable<'w> + 'w),
     pub material: &'w dyn Shadeable,
 }
 
 impl<'w> Object<'w> {
-    pub fn new(geometry: &dyn Hittable, material: &dyn Shadeable) -> Object<'w> {
+    pub fn new(geometry: &'w dyn Hittable<'w>, material: &'w dyn Shadeable) -> Object<'w> {
         Object {
             geometry,
             material,

@@ -12,7 +12,7 @@ pub trait RenderTarget {
 }
 
 pub fn render_to<T: RenderTarget, S: Sampler, C: Camera>(
-    scene: &Scene,
+    scene: Scene,
     view_plane: &ViewPlane,
     sampler: &S,
     camera: &C,

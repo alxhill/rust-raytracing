@@ -8,24 +8,24 @@ use bumpalo::collections::Vec;
 #[derive(Debug)]
 pub struct Scene<'w> {
     objects: Vec<'w, & 'w Object<'w>>,
-    lights: Vec<'w, Light>,
+    lights: Vec<'w, &'w Light>,
     pub bg_color: RGBColor,
 }
 
 impl<'w> Scene<'w> {
-    pub fn new(arena: &Bump) -> Scene<'w> {
-        Scene {
+    pub fn new(arena: &'w Bump) -> &mut Scene<'w> {
+        arena.alloc(Scene {
             objects: Vec::new_in(arena),
             lights: Vec::new_in(arena),
             bg_color: RGBColor::BLACK,
-        }
+        })
     }
 
     pub fn add_object(&mut self, object: &'w Object<'w>) {
         self.objects.push(object);
     }
 
-    pub fn add_light(&mut self, light: Light) {
+    pub fn add_light(&mut self, light: &'w Light) {
         self.lights.push(light);
     }
 

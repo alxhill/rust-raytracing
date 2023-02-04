@@ -1,9 +1,10 @@
 use crate::types::{Double, RGBColor, Vector3D};
 use crate::world::{Hit, Light};
 use std::fmt::Debug;
+use bumpalo::collections::Vec;
 
 pub trait Shadeable: Debug {
-    fn shade(&self, hit: Hit, lights: &Vec<Light>) -> RGBColor;
+    fn shade(&self, hit: Hit, lights: &Vec<&Light>) -> RGBColor;
 }
 
 pub trait BRDF: Debug {
@@ -11,24 +12,24 @@ pub trait BRDF: Debug {
     fn rho(&self, hit: &Hit, wo: &Vector3D) -> RGBColor;
 }
 
-#[derive(Debug)]
-pub struct Matte {
-    ambient: Box<dyn BRDF>,
-    diffuse: Box<dyn BRDF>,
+#[derive(Debug, Copy, Clone)]
+pub struct Matte<T: BRDF> {
+    ambient: T,
+    diffuse: T,
 }
 
-impl Matte {
+impl Matte<Lambertian> {
     #[inline(always)]
-    pub fn new(ka: Double, kd: Double, cd: RGBColor) -> Matte {
+    pub fn new(ka: Double, kd: Double, cd: RGBColor) -> Matte<Lambertian> {
         Matte {
-            ambient: Box::new(Lambertian::new(ka, cd)),
-            diffuse: Box::new(Lambertian::new(kd, cd))
+            ambient: Lambertian::new(ka, cd),
+            diffuse: Lambertian::new(kd, cd)
         }
     }
 }
 
-impl Shadeable for Matte {
-    fn shade(&self, hit: Hit, lights: &Vec<Light>) -> RGBColor {
+impl<T: BRDF> Shadeable for Matte<T> {
+    fn shade(&self, hit: Hit, lights: &Vec<&Light>) -> RGBColor {
         let wo = -hit.ray.direction;
         let mut l = self.ambient.rho(&hit, &wo);
         for light in lights.iter() {
@@ -44,7 +45,7 @@ impl Shadeable for Matte {
 
 // for initial implementation
 impl Shadeable for RGBColor {
-    fn shade(&self, _hit: Hit, _lights: &Vec<Light>) -> RGBColor {
+    fn shade(&self, _hit: Hit, _lights: &Vec<&Light>) -> RGBColor {
         *self
     }
 }

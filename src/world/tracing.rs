@@ -38,7 +38,7 @@ impl<'t> Hit<'t> {
         }
     }
 
-    pub fn set_obj(&mut self, object: &Object) {
+    pub fn set_obj(&mut self, object: &'t Object<'t>) {
         self.object = Some(object)
     }
 

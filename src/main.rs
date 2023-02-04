@@ -12,20 +12,21 @@ use crate::world::*;
 use pixel_canvas::input::MouseState;
 use pixel_canvas::Canvas;
 use std::io::Write;
-use std::sync::Arc;
 
 fn main() {
     println!("Starting execution.");
 
-    let mut scene_arena = bumpalo::Bump::new();
-
-    let mut scene = Scene::new(&scene_arena);
+    let scene_arena= bumpalo::Bump::new();
 
     let red_mat = scene_arena.alloc(Matte::new(0.25, 0.65, RGBColor::RED));
     let sphere_geom_1 = scene_arena.alloc(Sphere::new(Point3D::zero(), 40.0));
     let sphere_obj = scene_arena.alloc(Object::new(sphere_geom_1, red_mat));
 
+    let light1 = scene_arena.alloc(Light::point_light(Point3D::new(50.0, 50.0, 0.0), 3.0));
+
+    let mut scene = Scene::new(&scene_arena);
     scene.add_object(sphere_obj);
+    scene.add_light(light1);
 
     // let yellow_mat = Arc::new(Matte::new(0.2, 0.8, RGBColor::YELLOW));
     // let grey_mat = Arc::new(Matte::new(0.5, 0.5, RGBColor::GREY));
@@ -51,8 +52,8 @@ fn main() {
     //     Sphere::new(Point3D::new(40.0, 15.0, -2.0), 15.0),
     //     green_mat
     // ));
-    scene.add_light(Light::point_light(Point3D::new(50.0, 50.0, 0.0), 3.0));
-    scene.add_light(Light::point_light(Point3D::new(-60.0, -100.0, 0.0), 2.0));
+    // scene.add_light(Light::point_light(Point3D::new(50.0, 50.0, 0.0), 3.0));
+    // scene.add_light(Light::point_light(Point3D::new(-60.0, -100.0, 0.0), 2.0));
 
     let plane = ViewPlane::new(512, 512, 0.25);
     let mut camera = PinholeCamera::new(-100.0, 100.0);
@@ -78,18 +79,18 @@ fn main() {
                     println!();
                 }
                 camera.position().move_by(&Vector3D::new(0.0, 0.0, -0.5));
-                render_to(
-                    &scene,
-                    &plane,
-                    &sampler,
-                    &camera,
-                    &mut CanvasTarget::new(image),
-                );
+                // render_to(
+                //     &scene,
+                //     &plane,
+                //     &sampler,
+                //     &camera,
+                //     &mut CanvasTarget::new(image),
+                // );
             });
         }
         "--output" => {
             let mut render = ImageTarget::new(plane.width, plane.height);
-            render_to(&scene, &plane, &sampler, &camera, &mut render);
+            render_to(*scene, &plane, &sampler, &camera, &mut render);
             render.save_image("output.png".to_string());
         }
         _ => println!("Invalid flag: {flag}"),
