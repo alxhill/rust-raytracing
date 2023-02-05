@@ -18,7 +18,7 @@ fn main() {
     let scene_arena= bumpalo::Bump::new();
     let scene = Scene::new(&scene_arena);
 
-    let red_mat = scene_arena.alloc(Matte::new(0.25, 0.65, RGBColor::RED));
+    let red_mat = scene_arena.alloc(Phong::new(0.25, 0.65, 0.6, 20.0, RGBColor::RED));
     let yellow_mat = scene_arena.alloc(Matte::new(0.2, 0.8, RGBColor::YELLOW));
     let grey_mat = scene_arena.alloc(Matte::new(0.5, 0.5, RGBColor::GREY));
     let green_mat = scene_arena.alloc(Phong::new(0.2, 0.7, 1.0, 100.0, RGBColor::GREEN));
@@ -44,7 +44,7 @@ fn main() {
 
     let plane = ViewPlane::new(512, 512, 0.25);
     let camera = PinholeCamera::new(-100.0, 100.0);
-    let sampler = JitteredSampler::new(plane, 8);
+    let sampler = JitteredSampler::new(plane, 16);
 
     let mut render = ImageTarget::new(plane.width, plane.height);
     render_to(scene, &plane, &sampler, &camera, &mut render);
