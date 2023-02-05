@@ -1,7 +1,7 @@
 use crate::render::RenderTarget;
 use crate::types::RGBColor;
 use crate::world::ViewXY;
-use pixel_canvas::{Color, Image, RC, XY};
+use pixel_canvas::{Color, Image, XY};
 
 pub struct CanvasTarget<'a> {
     canvas_img: &'a mut Image,
