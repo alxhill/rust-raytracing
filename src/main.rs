@@ -11,7 +11,6 @@ use crate::types::*;
 use crate::world::*;
 use pixel_canvas::input::MouseState;
 use pixel_canvas::Canvas;
-use std::io::Write;
 
 fn main() {
     println!("Starting execution.");
@@ -56,7 +55,7 @@ fn main() {
     // scene.add_light(Light::point_light(Point3D::new(-60.0, -100.0, 0.0), 2.0));
 
     let plane = ViewPlane::new(512, 512, 0.25);
-    let mut camera = PinholeCamera::new(-100.0, 100.0);
+    let camera = PinholeCamera::new(-100.0, 100.0);
     let sampler = JitteredSampler::new(plane, 8);
 
     let mut render = ImageTarget::new(plane.width, plane.height);
