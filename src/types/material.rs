@@ -1,11 +1,11 @@
 use crate::types::{Double, RGBColor, Vector3D};
-use crate::world::{Hit, Light};
+use crate::world::{Hit, Light, Ray, Scene};
 use std::fmt::Debug;
 use bumpalo::collections::Vec;
 use num_traits::Pow;
 
 pub trait Shadeable: Debug {
-    fn shade(&self, hit: Hit, lights: &Vec<&Light>) -> RGBColor;
+    fn shade(&self, hit: Hit, scene: &Scene) -> RGBColor;
 }
 
 pub trait BRDF: Debug {
@@ -30,10 +30,10 @@ impl Matte {
 }
 
 impl Shadeable for Matte {
-    fn shade(&self, hit: Hit, lights: &Vec<&Light>) -> RGBColor {
+    fn shade(&self, hit: Hit, scene: &Scene) -> RGBColor {
         let wo = -hit.ray.direction;
         let mut l = self.ambient.rho(&hit, &wo);
-        for light in lights.iter() {
+        for light in scene.lights.iter() {
             let wi = light.direction(&hit.hit_loc);
             let ndotwi = hit.normal * wi;
             if ndotwi > 0.0 {
@@ -62,15 +62,24 @@ impl Phong {
 }
 
 impl Shadeable for Phong {
-    fn shade(&self, hit: Hit, lights: &Vec<&Light>) -> RGBColor {
+    fn shade(&self, hit: Hit, scene: &Scene) -> RGBColor {
         let wo = -hit.ray.direction;
         let mut l = self.ambient.rho(&hit, &wo);
-        for light in lights.iter() {
+        for light in scene.lights.iter() {
             let wi = light.direction(&hit.hit_loc);
             let ndotwi = hit.normal * wi;
             if ndotwi > 0.0 {
-                l += (self.diffuse.f(&hit, &wi, &wo)
-                    + self.specular.f(&hit, &wi, &wo)) * light.l() * ndotwi;
+                let mut in_shadow = false;
+
+                if light.casts_shadows {
+                    let shadow_ray = Ray::new(hit.hit_loc, wi);
+                    in_shadow = light.in_shadow(shadow_ray, scene);
+                }
+
+                if !in_shadow {
+                    l += (self.diffuse.f(&hit, &wi, &wo)
+                        + self.specular.f(&hit, &wi, &wo)) * light.l() * ndotwi;
+                }
             }
         }
 

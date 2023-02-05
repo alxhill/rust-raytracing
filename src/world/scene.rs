@@ -7,8 +7,8 @@ use bumpalo::collections::Vec;
 
 #[derive(Debug)]
 pub struct Scene<'w> {
-    objects: Vec<'w, & 'w Object<'w>>,
-    lights: Vec<'w, &'w Light>,
+    pub objects: Vec<'w, & 'w Object<'w>>,
+    pub lights: Vec<'w, &'w Light>,
     pub bg_color: RGBColor,
 }
 
@@ -31,8 +31,7 @@ impl<'w> Scene<'w> {
 
     pub fn render_color(&self, ray: &Ray) -> RGBColor {
         if let Some(hit) = self.hit(ray) {
-            let hit2 = hit.clone();
-            return hit.object.unwrap().material.shade(hit2, &self.lights);
+            return hit.object.unwrap().material.shade(hit.clone(), &self);
         }
         self.bg_color
     }
@@ -42,7 +41,7 @@ impl<'t> Hittable<'t> for Scene<'t> {
     fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
         let mut closest_hit: Option<Hit> = None;
         for object in &self.objects {
-            let maybe_hit = object.hit(&ray);
+            let maybe_hit = object.hit(ray);
             match (maybe_hit, &closest_hit) {
                 (Some(mut new_hit), None) => {
                     new_hit.set_obj(object);
