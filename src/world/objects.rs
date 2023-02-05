@@ -96,6 +96,7 @@ pub struct Plane {
 }
 
 impl Plane {
+    #[inline(always)]
     pub fn new(point: Point3D, normal: Vector3D) -> Plane {
         Plane { point, normal }
     }

@@ -21,7 +21,7 @@ fn main() {
     let red_mat = scene_arena.alloc(Matte::new(0.25, 0.65, RGBColor::RED));
     let yellow_mat = scene_arena.alloc(Matte::new(0.2, 0.8, RGBColor::YELLOW));
     let grey_mat = scene_arena.alloc(Matte::new(0.5, 0.5, RGBColor::GREY));
-    let green_mat = scene_arena.alloc(Matte::new(0.2, 0.7, RGBColor::GREEN));
+    let green_mat = scene_arena.alloc(Phong::new(0.2, 0.7, 1.0, RGBColor::GREEN));
 
     let red_sphere = scene_arena.alloc(Object::sphere(Sphere::new(Point3D::zero(), 40.0), red_mat));
     let yellow_sphere = scene_arena.alloc(Object::sphere(Sphere::new(Point3D::new(0.0, 20.0, -1.0), 30.0), yellow_mat));
