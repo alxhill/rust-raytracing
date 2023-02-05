@@ -52,11 +52,11 @@ pub struct Phong {
 }
 
 impl Phong {
-    pub fn new(ka: Double, kd: Double, ks: Double, cd: RGBColor) -> Phong {
+    pub fn new(ka: Double, kd: Double, ks: Double, exp: Double, cd: RGBColor) -> Phong {
         Phong {
             ambient: Lambertian::new(ka, cd),
             diffuse: Lambertian::new(kd, cd),
-            specular: Glossy::new(ks, 1.0, cd)
+            specular: Glossy::new(ks, exp, cd)
         }
     }
 }
@@ -70,7 +70,7 @@ impl Shadeable for Phong {
             let ndotwi = hit.normal * wi;
             if ndotwi > 0.0 {
                 l += (self.diffuse.f(&hit, &wi, &wo)
-                    * self.specular.f(&hit, &wi, &wo)) * light.l() * ndotwi;
+                    + self.specular.f(&hit, &wi, &wo)) * light.l() * ndotwi;
             }
         }
 
