@@ -15,8 +15,8 @@ use pixel_canvas::Canvas;
 fn main() {
     println!("Starting execution.");
 
-    let scene_arena= bumpalo::Bump::new();
-    let scene = Scene::new(&scene_arena);
+    let scene_arena= Box::new(bumpalo::Bump::new());
+    let mut scene = Scene::new(&scene_arena);
 
     let red_mat = scene_arena.alloc(Phong::new(0.25, 0.65, 0.6, 20.0, RGBColor::RED));
     let yellow_mat = scene_arena.alloc(Phong::new(0.2, 0.8, 0.0, 1.0, RGBColor::YELLOW));
@@ -49,7 +49,7 @@ fn main() {
     let sampler = JitteredSampler::new(plane, 16);
 
     let mut render = ImageTarget::new(plane.width, plane.height);
-    render_to(scene, &plane, &sampler, &camera, &mut render);
+    render_to(&scene, &plane, &sampler, &camera, &mut render);
 
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
 

@@ -13,12 +13,12 @@ pub struct Scene<'w> {
 }
 
 impl<'w> Scene<'w> {
-    pub fn new(arena: &'w Bump) -> &mut Scene<'w> {
-        arena.alloc(Scene {
+    pub fn new(arena: &'w Bump) -> Scene<'w> {
+        Scene {
             objects: Vec::new_in(arena),
             lights: Vec::new_in(arena),
             bg_color: RGBColor::BLACK,
-        })
+        }
     }
 
     pub fn add_object(&mut self, object: &'w Object<'w>) {
