@@ -4,16 +4,43 @@ use crate::world::Ray;
 
 #[derive(Debug)]
 pub struct Object<'w> {
-    pub geometry: &'w (dyn Hittable<'w> + 'w),
+    pub geometry: Geometry,
     pub material: &'w dyn Shadeable,
 }
 
+#[derive(Debug, Copy, Clone)]
+pub enum Geometry {
+    Sphere(Sphere),
+    Plane(Plane)
+}
+
+impl<'t> Hittable<'t> for Geometry {
+    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
+        match self {
+            Geometry::Sphere(sphere) => {
+                sphere.hit(ray)
+            }
+            Geometry::Plane(plane) => {
+                plane.hit(ray)
+            }
+        }
+    }
+}
+
 impl<'w> Object<'w> {
-    pub fn new(geometry: &'w dyn Hittable<'w>, material: &'w dyn Shadeable) -> Object<'w> {
+    pub fn new(geometry: Geometry, material: &'w dyn Shadeable) -> Object<'w> {
         Object {
             geometry,
             material,
         }
+    }
+
+    pub fn sphere(sphere: Sphere, material: &'w dyn Shadeable) -> Object<'w> {
+        Object::new(Geometry::Sphere(sphere), material)
+    }
+
+    pub fn plane(plane: Plane, material: &'w dyn Shadeable) -> Object<'w> {
+        Object::new(Geometry::Plane(plane), material)
     }
 }
 
