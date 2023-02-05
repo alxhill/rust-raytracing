@@ -1,7 +1,6 @@
 use crate::types::{Double, RGBColor, Vector3D};
-use crate::world::{Hit, Light, Ray, Scene};
+use crate::world::{Hit, Ray, Scene};
 use std::fmt::Debug;
-use bumpalo::collections::Vec;
 use num_traits::Pow;
 
 pub trait Shadeable: Debug {

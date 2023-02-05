@@ -1,5 +1,5 @@
 use crate::types::{Double, Point3D, RGBColor, Vector3D};
-use crate::world::{Hit, Hittable, Ray, Scene};
+use crate::world::{Hittable, Ray, Scene};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Light {
@@ -30,6 +30,7 @@ impl Light {
     pub fn in_shadow(&self, shadow_ray: Ray, scene: &Scene) -> bool {
         let dist = (self.location - shadow_ray.origin).magnitude();
         for object in scene.objects.iter() {
+            // todo: use a separate shadow hit function to skip material calculations
             if let Some(shadow_hit) = object.hit(&shadow_ray) {
                 if shadow_hit.t < dist {
                     return true
