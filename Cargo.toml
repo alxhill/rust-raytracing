@@ -11,4 +11,4 @@ rand = "0.8.5"
 bumpalo = {version = "3.12.0", features = ["boxed", "collections"]}
 
 [profile.dev]
-opt-level = 2
+opt-level = 3

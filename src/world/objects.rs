@@ -1,4 +1,3 @@
-use std::rc::Rc;
 use std::sync::Arc;
 use crate::types::{Double, Point3D, Shadeable, Vector3D};
 use crate::world::tracing::{Hit, Hittable};
@@ -16,8 +15,8 @@ pub enum Geometry {
     Plane(Plane)
 }
 
-impl<'t> Hittable<'t> for Geometry {
-    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
+impl Hittable for Geometry {
+    fn hit(&self, ray: &Ray) -> Option<Hit> {
         match self {
             Geometry::Sphere(sphere) => {
                 sphere.hit(ray)
@@ -46,8 +45,8 @@ impl<'w> Object {
     }
 }
 
-impl<'t> Hittable<'t> for Object {
-    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
+impl Hittable for Object {
+    fn hit(&self, ray: &Ray) -> Option<Hit> {
         self.geometry.hit(ray)
     }
 }
@@ -65,8 +64,8 @@ impl Sphere {
     }
 }
 
-impl<'t> Hittable<'t> for Sphere {
-    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
+impl Hittable for Sphere {
+    fn hit(&self, ray: &Ray) -> Option<Hit> {
         let oc: Vector3D = ray.origin - self.origin;
         let a: Double = ray.direction * ray.direction;
         let b: Double = 2.0 * (oc * ray.direction);
@@ -104,8 +103,8 @@ impl Plane {
     }
 }
 
-impl<'t> Hittable<'t> for Plane {
-    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
+impl Hittable for Plane {
+    fn hit(&self, ray: &Ray) -> Option<Hit> {
         let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 
         if t > Hit::EPSILON {
