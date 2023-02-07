@@ -15,7 +15,7 @@ use pixel_canvas::Canvas;
 fn main() {
     println!("Starting execution.");
 
-    let scene_arena= Box::new(bumpalo::Bump::new());
+    let scene_arena= bumpalo::Bump::new();
     let mut scene = Scene::new(&scene_arena);
 
     let red_mat = scene_arena.alloc(Phong::new(0.25, 0.65, 0.6, 20.0, RGBColor::RED));
