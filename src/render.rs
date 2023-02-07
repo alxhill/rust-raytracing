@@ -12,8 +12,8 @@ pub trait RenderTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor);
 }
 
-pub fn render_to<T: RenderTarget, S: Sampler, C: Camera>(
-    scene: &Scene,
+pub fn render_to<'w, T: RenderTarget, S: Sampler, C: Camera>(
+    scene: &'w Scene,
     view_plane: &ViewPlane,
     sampler: &S,
     camera: &C,

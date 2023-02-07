@@ -1,7 +1,7 @@
 use crate::types::{Double, Point3D, RGBColor, Vector3D};
 use crate::world::{Hittable, Ray, Scene};
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug)]
 pub struct Light {
     color: RGBColor,
     location: Point3D,

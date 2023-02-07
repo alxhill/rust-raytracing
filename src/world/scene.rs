@@ -2,59 +2,55 @@ use crate::types::RGBColor;
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::{Light, Object, Ray};
 use std::fmt::Debug;
-use bumpalo::Bump;
-use bumpalo::collections::Vec;
 
 #[derive(Debug)]
-pub struct Scene<'w> {
-    pub objects: Vec<'w, & 'w Object<'w>>,
-    pub lights: Vec<'w, &'w Light>,
+pub struct Scene {
+    pub objects: Vec<Object>,
+    pub lights: Vec<Light>,
     pub bg_color: RGBColor,
 }
 
-impl<'w> Scene<'w> {
-    pub fn new(arena: &'w Bump) -> Scene<'w> {
+impl Scene {
+    pub fn new() -> Scene {
         Scene {
-            objects: Vec::new_in(arena),
-            lights: Vec::new_in(arena),
+            objects: Vec::new(),
+            lights: Vec::new(),
             bg_color: RGBColor::BLACK,
         }
     }
 
-    pub fn add_object(&mut self, object: &'w Object<'w>) {
+    pub fn add_object(&mut self, object: Object) {
         self.objects.push(object);
     }
 
-    pub fn add_light(&mut self, light: &'w Light) {
+    pub fn add_light(&mut self, light: Light) {
         self.lights.push(light);
     }
 
     pub fn render_color(&self, ray: &Ray) -> RGBColor {
-        if let Some(hit) = self.hit(ray) {
-            return hit.object.unwrap().material.shade(hit.clone(), &self);
+        if let (Some(hit), Some(obj)) = self.hit(ray) {
+            return obj.material.shade(hit, self);
         }
         self.bg_color
     }
-}
 
-impl<'t> Hittable<'t> for Scene<'t> {
-    fn hit(&self, ray: &Ray) -> Option<Hit<'t>> {
-        let mut closest_hit: Option<Hit> = None;
+    fn hit<'t>(&'t self, ray: &'t Ray) -> (Option<Hit>, Option<&'t Object>) {
+        let mut closest_hit = None;
+        let mut closest_obj = None;
         for object in &self.objects {
             let maybe_hit = object.hit(ray);
             match (maybe_hit, &closest_hit) {
-                (Some(mut new_hit), None) => {
-                    new_hit.set_obj(object);
+                (Some(new_hit), None) => {
+                    closest_obj = Some(object);
                     closest_hit = Some(new_hit)
                 },
-                (Some(mut new_hit), Some(prev_hit)) if new_hit.t < prev_hit.t => {
-                    new_hit.set_obj(object);
+                (Some(new_hit), Some(prev_hit)) if new_hit.t < prev_hit.t => {
+                    closest_obj = Some(object);
                     closest_hit = Some(new_hit)
                 }
                 (Some(_), Some(_)) | (None, _) => {}
             }
         }
-
-        closest_hit
+        (closest_hit, closest_obj)
     }
 }
