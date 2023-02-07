@@ -22,7 +22,7 @@ pub struct Hit<'t> {
     pub ray: Ray,
     // todo: deprecate Object and find cleaner way
     // to pass around material info
-    pub object: Option<& 't Object<'t>>,
+    pub object: Option<& 't Object>,
     pub depth: u8,
 }
 
@@ -38,7 +38,7 @@ impl<'t> Hit<'t> {
         }
     }
 
-    pub fn set_obj(&mut self, object: &'t Object<'t>) {
+    pub fn set_obj(&mut self, object: &'t Object) {
         self.object = Some(object)
     }
 
