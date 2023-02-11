@@ -34,7 +34,7 @@ impl Scene {
         self.bg_color
     }
 
-    fn hit<'t>(&'t self, ray: &'t Ray) -> (Option<Hit>, Option<&'t Object>) {
+    fn hit(&self, ray: &Ray) -> (Option<Hit>, Option<&Object>) {
         let mut closest_hit = None;
         let mut closest_obj = None;
         for object in &self.objects {

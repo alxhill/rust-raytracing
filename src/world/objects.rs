@@ -28,7 +28,7 @@ impl Hittable for Geometry {
     }
 }
 
-impl<'w> Object {
+impl Object {
     pub fn new(geometry: Geometry, material: Arc<dyn Shadeable>) -> Object {
         Object {
             geometry,

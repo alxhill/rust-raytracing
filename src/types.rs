@@ -5,6 +5,7 @@ mod point2d;
 mod point3d;
 mod utils;
 mod vector3d;
+mod brdf;
 
 pub use color::*;
 pub use material::*;

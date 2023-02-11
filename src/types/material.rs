@@ -1,15 +1,10 @@
-use crate::types::{Double, RGBColor, Vector3D};
+use crate::types::{Double, RGBColor};
 use crate::world::{Hit, Ray, Scene};
 use std::fmt::Debug;
-use num_traits::Pow;
+use crate::types::brdf::{BRDF, Glossy, Lambertian, PerfectSpecular};
 
 pub trait Shadeable: Debug {
     fn shade(&self, hit: Hit, scene: &Scene) -> RGBColor;
-}
-
-pub trait BRDF: Debug {
-    fn f(&self, hit: &Hit, wi: &Vector3D, wo: &Vector3D) -> RGBColor;
-    fn rho(&self, hit: &Hit, wo: &Vector3D) -> RGBColor;
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -47,7 +42,8 @@ impl Shadeable for Matte {
 pub struct Phong {
     ambient: Lambertian,
     diffuse: Lambertian,
-    specular: Glossy
+    specular: Glossy,
+    reflective: Option<PerfectSpecular>
 }
 
 impl Phong {
@@ -55,7 +51,17 @@ impl Phong {
         Phong {
             ambient: Lambertian::new(ka, cd),
             diffuse: Lambertian::new(kd, cd),
-            specular: Glossy::new(ks, exp, cd)
+            specular: Glossy::new(ks, exp, cd),
+            reflective: None
+        }
+    }
+
+    pub fn reflective(ka: Double, kd: Double, ks: Double, exp: Double, cd: RGBColor, kr: Double) -> Phong {
+        Phong {
+            ambient: Lambertian::new(ka, cd),
+            diffuse: Lambertian::new(kd, cd),
+            specular: Glossy::new(ks, exp, cd),
+            reflective: Some(PerfectSpecular::new(kr, cd))
         }
     }
 }
@@ -82,60 +88,16 @@ impl Shadeable for Phong {
             }
         }
 
-        l
-    }
-}
+        // specular reflection
+        if let Some(specular) = self.reflective {
+            let (wi, specular_l) = specular.sample_f(&hit, &wo);
+            let reflected_ray = Ray::new(hit.hit_loc, wi);
 
-#[derive(Debug, Copy, Clone)]
-pub struct Lambertian {
-    kd: Double,
-    color: RGBColor,
-}
+            l += specular_l * scene.tracer.trace_ray(reflected_ray, hit.depth + 1);
 
-impl Lambertian {
-    pub fn new(kd: Double, color: RGBColor) -> Lambertian {
-        Lambertian { kd, color }
-    }
-}
 
-impl BRDF for Lambertian {
-    fn f(&self, _hit: &Hit, _wi: &Vector3D, _wo: &Vector3D) -> RGBColor {
-        self.color * self.kd / std::f64::consts::PI
-    }
-
-    fn rho(&self, _hit: &Hit, _wo: &Vector3D) -> RGBColor {
-        self.color * self.kd
-    }
-}
-
-#[derive(Debug, Copy, Clone)]
-pub struct Glossy {
-    ks: Double,
-    exp: Double,
-    color: RGBColor
-}
-
-impl Glossy {
-    pub fn new(ks: Double, exp: Double, color: RGBColor) -> Glossy {
-        Glossy {ks, exp, color}
-    }
-}
-
-impl BRDF for Glossy {
-    fn f(&self, hit: &Hit, wi: &Vector3D, wo: &Vector3D) -> RGBColor {
-        let ndotwi = hit.normal * *wi;
-        let r = -*wi + 2.0 * hit.normal * ndotwi;
-        let rdotwo = r * *wo;
-
-        if rdotwo > 0.0 {
-            self.color * self.ks * rdotwo.pow(self.exp)
-        } else {
-            RGBColor::BLACK
         }
 
-    }
-
-    fn rho(&self, _hit: &Hit, _wo: &Vector3D) -> RGBColor {
-        RGBColor::BLACK
+        l
     }
 }
