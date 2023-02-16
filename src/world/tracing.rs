@@ -11,6 +11,10 @@ impl Ray {
     pub fn new(origin: Point3D, direction: Vector3D) -> Ray {
         Ray { origin, direction }
     }
+
+    pub fn at(&self, t: Double) -> Point3D {
+        self.origin + t * self.direction
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -23,7 +27,8 @@ pub struct Hit {
 }
 
 impl Hit {
-    pub fn new(dist: Double, hit_loc: Point3D, ray: Ray, normal: Vector3D) -> Hit {
+    pub fn new(dist: Double, hit_loc: Point3D, ray: Ray, mut normal: Vector3D) -> Hit {
+        normal.normalize();
         Hit {
             t: dist,
             hit_loc,

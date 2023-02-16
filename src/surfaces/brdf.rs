@@ -1,7 +1,7 @@
-use std::fmt::Debug;
-use num_traits::Pow;
 use crate::types::{Double, RGBColor, Vector3D};
 use crate::world::Hit;
+use num_traits::Pow;
+use std::fmt::Debug;
 
 pub trait BRDF: Debug {
     fn f(&self, hit: &Hit, wi: &Vector3D, wo: &Vector3D) -> RGBColor;
@@ -34,12 +34,12 @@ impl BRDF for Lambertian {
 pub struct Glossy {
     ks: Double,
     exp: Double,
-    color: RGBColor
+    color: RGBColor,
 }
 
 impl Glossy {
     pub fn new(ks: Double, exp: Double, color: RGBColor) -> Glossy {
-        Glossy {ks, exp, color}
+        Glossy { ks, exp, color }
     }
 }
 
@@ -54,7 +54,6 @@ impl BRDF for Glossy {
         } else {
             RGBColor::BLACK
         }
-
     }
 
     fn rho(&self, _hit: &Hit, _wo: &Vector3D) -> RGBColor {
@@ -65,18 +64,19 @@ impl BRDF for Glossy {
 #[derive(Debug, Copy, Clone)]
 pub struct PerfectSpecular {
     kr: Double,
-    color: RGBColor
+    color: RGBColor,
 }
 
 // doesn't implement BRDF because we don't use rho or f
 impl PerfectSpecular {
     pub fn new(kr: Double, color: RGBColor) -> PerfectSpecular {
-        PerfectSpecular {kr, color}
+        PerfectSpecular { kr, color }
     }
 
     pub fn sample_f(&self, hit: &Hit, wo: &Vector3D) -> (Vector3D, RGBColor) {
         let ndotwo = hit.normal * *wo;
-        let wi = -*wo + 2.0 * hit.normal * ndotwo;
-        (wi, (self.color * self.kr) / (hit.normal * wi))
+        let mut wi = -*wo + 2.0 * hit.normal * ndotwo;
+        wi.normalize();
+        (wi, (self.color * self.kr) / (hit.normal * wi).abs())
     }
 }

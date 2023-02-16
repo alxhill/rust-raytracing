@@ -19,7 +19,7 @@ impl Scene {
             objects: Vec::new(),
             lights: Vec::new(),
             bg_color: RGBColor::BLACK,
-            max_depth: 5,
+            max_depth: 2,
         }
     }
 

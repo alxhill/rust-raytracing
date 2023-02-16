@@ -106,7 +106,7 @@ impl Neg for Vector3D {
 // Division
 impl Div<Double> for Vector3D {
     type Output = Vector3D;
-    fn div(self, r: f64) -> Vector3D {
+    fn div(self, r: Double) -> Vector3D {
         Vector3D::new(self.x / r, self.y / r, self.z / r)
     }
 }
