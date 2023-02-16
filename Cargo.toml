@@ -7,7 +7,7 @@ repository = "https://github.com/alxhill/rust-raytracing"
 license = "MIT"
 
 [workspace]
-members = ["display", "wasm"]
+members = ["display", "rt-wasm"]
 default-members = ["display"]
 
 [dependencies]

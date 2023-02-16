@@ -7,5 +7,5 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn greet(name: &str) {
-    alert(&format!("Hello {} from wasm-raytracer!", name));
+    alert(&format!("Hello {} from rt-wasm-raytracer!", name));
 }
