@@ -101,7 +101,7 @@ impl Shadeable for Phong {
             let (wi, specular_l) = specular.sample_f(&hit, &wo);
             let reflected_ray = Ray::new(hit.hit_loc, wi);
 
-            l += specular_l * scene.render_color(&reflected_ray, depth + 1);
+            l += specular_l * scene.render_color(&reflected_ray, depth + 1) * (hit.normal * wi);
         }
 
         l
