@@ -1,4 +1,4 @@
-use crate::types::brdf::{Glossy, Lambertian, PerfectSpecular, BRDF};
+use crate::surfaces::brdf::{Glossy, Lambertian, PerfectSpecular, BRDF};
 use crate::types::{Double, RGBColor};
 use crate::world::{Depth, Hit, Ray, Scene};
 use std::fmt::Debug;
