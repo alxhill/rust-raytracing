@@ -18,8 +18,8 @@ fn main() {
 
     let red_mat = Arc::new(Phong::reflective(0.25, 0.65, 0.6, 20.0, RGBColor::RED, 0.5));
     let yellow_mat = Arc::new(Phong::new(0.2, 0.8, 0.0, 1.0, RGBColor::YELLOW));
-    let grey_mat = Arc::new(Phong::reflective(0.5, 0.5, 0.0, 1.0, RGBColor::GREY, 0.2));
-    let green_mat = Arc::new(Phong::reflective(0.2, 0.7, 0.0, 1.0, RGBColor::GREEN, 0.8));
+    let grey_mat = Arc::new(Phong::new(0.5, 0.5, 0.0, 1.0, RGBColor::GREY));
+    let green_mat = Arc::new(Phong::reflective(0.2, 0.4, 0.0, 1.0, RGBColor::GREEN, 0.8));
 
     scene.add_object(Object::sphere(Sphere::new(Point3D::zero(), 30.0), red_mat));
     scene.add_object(Object::sphere(
@@ -63,7 +63,7 @@ fn main() {
             println!("Starting display.");
             canvas.render(move |_, image| {
                 // copy_to(&render.buffer, &mut CanvasTarget::new(image));
-                camera.position().move_by(&Vector3D::new(0.0, 0.0, 1.5));
+                camera.position().move_by(&Vector3D::new(0.0, 0.0, 0.5));
                 render_to(
                     &scene,
                     &plane,

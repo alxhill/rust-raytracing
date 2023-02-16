@@ -22,8 +22,11 @@ impl ImageTarget {
 
 impl RenderTarget for ImageTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
-        self.buffer
-            .put_pixel(xy.x(), self.buffer.height() - xy.y() - 1, color.as_rgb());
+        self.buffer.put_pixel(
+            xy.x(),
+            self.buffer.height() - xy.y() - 1,
+            Rgb(color.as_u8()),
+        );
     }
 }
 

@@ -7,9 +7,11 @@ repository = "https://github.com/alxhill/rust-raytracing"
 license = "MIT"
 
 [workspace]
-members = ["display"]
+members = ["display", "wasm"]
+default-members = ["display"]
 
 [dependencies]
+getrandom = { version = "0.2", features = ["js"] }
 rand = "0.8.5"
 num-traits = "0.2"
 
