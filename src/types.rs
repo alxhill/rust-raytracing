@@ -2,7 +2,6 @@ mod color;
 mod matrix;
 mod point2d;
 mod point3d;
-mod utils;
 mod vector3d;
 
 pub use color::*;

@@ -70,22 +70,13 @@ impl Hittable for Sphere {
             return None;
         }
 
-        let mut tmin: Option<Double> = None;
-
         let small_root = (-b - discriminant.sqrt()) / (2.0 * a);
-        if small_root > Hit::EPSILON {
-            tmin = Some(small_root);
-        }
-
         let large_root = (-b + discriminant.sqrt()) / (2.0 * a);
 
-        if tmin.is_none() && large_root > Hit::EPSILON {
-            tmin = Some(large_root);
-        }
-
-        if let Some(t) = tmin {
+        if small_root > Hit::EPSILON || large_root > Hit::EPSILON {
+            let t = small_root.min(large_root);
             let hit_loc = ray.at(t);
-            let normal = (hit_loc - self.origin) / self.radius;
+            let normal = (hit_loc - self.origin).normalize();
             return Some(Hit::new(t, hit_loc, *ray, normal));
         }
 
