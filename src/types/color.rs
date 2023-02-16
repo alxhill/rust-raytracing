@@ -1,5 +1,4 @@
 use crate::types::Double;
-use image::Rgb;
 use num_traits::NumCast;
 use std::ops::{Add, AddAssign, BitXor, Div, Mul};
 
@@ -29,10 +28,6 @@ impl RGBColor {
             (self.g.clamp(0.0, 1.0) * 255.0) as u8,
             (self.b.clamp(0.0, 1.0) * 255.0) as u8,
         ]
-    }
-
-    pub fn as_rgb(&self) -> Rgb<u8> {
-        Rgb(self.as_u8())
     }
 
     pub const WHITE: RGBColor = RGBColor::new(1.0, 1.0, 1.0);

@@ -1,7 +1,7 @@
-use crate::render::RenderTarget;
-use crate::types::RGBColor;
-use crate::world::ViewXY;
+use image::Rgb;
 use pixel_canvas::{Color, Image, XY};
+use rust_raytracing::render::RenderTarget;
+use rust_raytracing::{RGBColor, ViewXY};
 
 pub struct CanvasTarget<'a> {
     canvas_img: &'a mut Image,
@@ -13,17 +13,15 @@ impl CanvasTarget<'_> {
     }
 }
 
-impl ViewXY {
-    fn to_xy(self, height: usize) -> XY {
-        XY(self.x() as usize, height - self.y() as usize - 1)
-    }
+fn to_xy(xy: &ViewXY, height: usize) -> XY {
+    XY(xy.x() as usize, height - xy.y() as usize - 1)
 }
 
 impl RenderTarget for CanvasTarget<'_> {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
-        let rgb = color.as_rgb();
+        let rgb = Rgb(color.as_u8());
         let h = self.canvas_img.height();
-        self.canvas_img[xy.to_xy(h)] = Color {
+        self.canvas_img[to_xy(xy, h)] = Color {
             r: rgb[0],
             g: rgb[1],
             b: rgb[2],

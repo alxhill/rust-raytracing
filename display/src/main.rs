@@ -3,16 +3,13 @@ extern crate image;
 extern crate pixel_canvas;
 
 mod render;
-mod surfaces;
-mod types;
-mod world;
 
-use crate::render::{render_to, CanvasTarget, ImageTarget};
-use crate::surfaces::Phong;
-use crate::types::*;
-use crate::world::*;
+use crate::render::canvas::CanvasTarget;
+use crate::render::image::ImageTarget;
 use pixel_canvas::input::MouseState;
 use pixel_canvas::Canvas;
+use rust_raytracing::prelude::*;
+use rust_raytracing::render::render_to;
 use std::sync::Arc;
 
 fn main() {
@@ -63,16 +60,9 @@ fn main() {
                 .state(MouseState::new())
                 .input(MouseState::handle_input);
 
-            // let mut render_count: u32 = 0;
             println!("Starting display.");
             canvas.render(move |_, image| {
                 // copy_to(&render.buffer, &mut CanvasTarget::new(image));
-                // print!(".");
-                // std::io::stdout().flush().unwrap();
-                // render_count += 1;
-                // if render_count % 100 == 0 {
-                //     println!();
-                // }
                 camera.position().move_by(&Vector3D::new(0.0, 0.0, 1.5));
                 render_to(
                     &scene,
