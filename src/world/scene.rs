@@ -3,11 +3,14 @@ use crate::world::tracing::{Hit, Hittable};
 use crate::world::{Light, Object, Ray};
 use std::fmt::Debug;
 
+pub type Depth = u8;
+
 #[derive(Debug)]
 pub struct Scene {
     pub objects: Vec<Object>,
     pub lights: Vec<Light>,
     pub bg_color: RGBColor,
+    max_depth: Depth,
 }
 
 impl Scene {
@@ -16,6 +19,7 @@ impl Scene {
             objects: Vec::new(),
             lights: Vec::new(),
             bg_color: RGBColor::BLACK,
+            max_depth: 5,
         }
     }
 
@@ -27,9 +31,13 @@ impl Scene {
         self.lights.push(light);
     }
 
-    pub fn render_color(&self, ray: &Ray) -> RGBColor {
+    pub fn render_color(&self, ray: &Ray, depth: Depth) -> RGBColor {
+        if depth > self.max_depth {
+            return self.bg_color;
+        }
+
         if let (Some(hit), Some(obj)) = self.hit(ray) {
-            return obj.material.shade(hit, self);
+            return obj.material.shade(hit, self, depth);
         }
         self.bg_color
     }
@@ -43,7 +51,7 @@ impl Scene {
                 (Some(new_hit), None) => {
                     closest_obj = Some(object);
                     closest_hit = Some(new_hit)
-                },
+                }
                 (Some(new_hit), Some(prev_hit)) if new_hit.t < prev_hit.t => {
                     closest_obj = Some(object);
                     closest_hit = Some(new_hit)

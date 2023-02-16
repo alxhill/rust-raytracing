@@ -1,7 +1,7 @@
-use std::sync::Arc;
 use crate::types::{Double, Point3D, Shadeable, Vector3D};
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::Ray;
+use std::sync::Arc;
 
 #[derive(Debug)]
 pub struct Object {
@@ -12,28 +12,21 @@ pub struct Object {
 #[derive(Debug, Copy, Clone)]
 pub enum Geometry {
     Sphere(Sphere),
-    Plane(Plane)
+    Plane(Plane),
 }
 
 impl Hittable for Geometry {
     fn hit(&self, ray: &Ray) -> Option<Hit> {
         match self {
-            Geometry::Sphere(sphere) => {
-                sphere.hit(ray)
-            }
-            Geometry::Plane(plane) => {
-                plane.hit(ray)
-            }
+            Geometry::Sphere(sphere) => sphere.hit(ray),
+            Geometry::Plane(plane) => plane.hit(ray),
         }
     }
 }
 
 impl Object {
     pub fn new(geometry: Geometry, material: Arc<dyn Shadeable>) -> Object {
-        Object {
-            geometry,
-            material,
-        }
+        Object { geometry, material }
     }
 
     pub fn sphere(sphere: Sphere, material: Arc<dyn Shadeable>) -> Object {
@@ -108,7 +101,12 @@ impl Hittable for Plane {
         let t: Double = (self.point - ray.origin) * self.normal / (ray.direction * self.normal);
 
         if t > Hit::EPSILON {
-            return Some(Hit::new(t, ray.origin + (ray.direction * t), *ray, self.normal));
+            return Some(Hit::new(
+                t,
+                ray.origin + (ray.direction * t),
+                *ray,
+                self.normal,
+            ));
         }
         None
     }

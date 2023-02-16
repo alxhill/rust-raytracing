@@ -1,10 +1,10 @@
+use crate::types::brdf::{Glossy, Lambertian, PerfectSpecular, BRDF};
 use crate::types::{Double, RGBColor};
-use crate::world::{Hit, Ray, Scene};
+use crate::world::{Depth, Hit, Ray, Scene};
 use std::fmt::Debug;
-use crate::types::brdf::{BRDF, Glossy, Lambertian, PerfectSpecular};
 
 pub trait Shadeable: Debug {
-    fn shade(&self, hit: Hit, scene: &Scene) -> RGBColor;
+    fn shade(&self, hit: Hit, scene: &Scene, depth: Depth) -> RGBColor;
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -18,13 +18,13 @@ impl Matte {
     pub fn new(ka: Double, kd: Double, cd: RGBColor) -> Matte {
         Matte {
             ambient: Lambertian::new(ka, cd),
-            diffuse: Lambertian::new(kd, cd)
+            diffuse: Lambertian::new(kd, cd),
         }
     }
 }
 
 impl Shadeable for Matte {
-    fn shade(&self, hit: Hit, scene: &Scene) -> RGBColor {
+    fn shade(&self, hit: Hit, scene: &Scene, _depth: Depth) -> RGBColor {
         let wo = -hit.ray.direction;
         let mut l = self.ambient.rho(&hit, &wo);
         for light in scene.lights.iter() {
@@ -43,7 +43,7 @@ pub struct Phong {
     ambient: Lambertian,
     diffuse: Lambertian,
     specular: Glossy,
-    reflective: Option<PerfectSpecular>
+    reflective: Option<PerfectSpecular>,
 }
 
 impl Phong {
@@ -52,22 +52,29 @@ impl Phong {
             ambient: Lambertian::new(ka, cd),
             diffuse: Lambertian::new(kd, cd),
             specular: Glossy::new(ks, exp, cd),
-            reflective: None
+            reflective: None,
         }
     }
 
-    pub fn reflective(ka: Double, kd: Double, ks: Double, exp: Double, cd: RGBColor, kr: Double) -> Phong {
+    pub fn reflective(
+        ka: Double,
+        kd: Double,
+        ks: Double,
+        exp: Double,
+        cd: RGBColor,
+        kr: Double,
+    ) -> Phong {
         Phong {
             ambient: Lambertian::new(ka, cd),
             diffuse: Lambertian::new(kd, cd),
             specular: Glossy::new(ks, exp, cd),
-            reflective: Some(PerfectSpecular::new(kr, cd))
+            reflective: Some(PerfectSpecular::new(kr, cd)),
         }
     }
 }
 
 impl Shadeable for Phong {
-    fn shade(&self, hit: Hit, scene: &Scene) -> RGBColor {
+    fn shade(&self, hit: Hit, scene: &Scene, depth: Depth) -> RGBColor {
         let wo = -hit.ray.direction;
         let mut l = self.ambient.rho(&hit, &wo);
         for light in scene.lights.iter() {
@@ -82,8 +89,9 @@ impl Shadeable for Phong {
                 }
 
                 if !in_shadow {
-                    l += (self.diffuse.f(&hit, &wi, &wo)
-                        + self.specular.f(&hit, &wi, &wo)) * light.l() * ndotwi;
+                    l += (self.diffuse.f(&hit, &wi, &wo) + self.specular.f(&hit, &wi, &wo))
+                        * light.l()
+                        * ndotwi;
                 }
             }
         }
@@ -93,9 +101,7 @@ impl Shadeable for Phong {
             let (wi, specular_l) = specular.sample_f(&hit, &wo);
             let reflected_ray = Ray::new(hit.hit_loc, wi);
 
-            l += specular_l * scene.tracer.trace_ray(reflected_ray, hit.depth + 1);
-
-
+            l += specular_l * scene.render_color(&reflected_ray, depth + 1);
         }
 
         l

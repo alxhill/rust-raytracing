@@ -24,7 +24,7 @@ pub fn render_to<'w, T: RenderTarget, S: Sampler, C: Camera>(
         let points = sampler.points_for_pixel(xy);
         for point in points.iter() {
             let ray = camera.ray_for_point(point);
-            pixel_color += scene.render_color(&ray);
+            pixel_color += scene.render_color(&ray, 0);
         }
         pixel_color = (pixel_color / points.len()) ^ view_plane.inv_gamma;
         img.set_pixel(xy, &pixel_color);
@@ -37,5 +37,4 @@ pub fn copy_to<T: RenderTarget>(image: &RtImageBuffer, target: &mut T) {
             target.set_pixel(&ViewXY(x, y), &RGBColor::from(image.get_pixel(x, y).0))
         }
     }
-
 }
