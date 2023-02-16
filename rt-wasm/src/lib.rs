@@ -27,34 +27,47 @@ pub fn pixel(x: u32, y: u32) -> Rgb {
     let camera = PinholeCamera::new(-100.0, 100.0);
     let sampler = JitteredSampler::new(plane, 1);
 
-    let mut buffer = JsBuffer::new(plane.width as usize, plane.height as usize);
+    let mut buffer = JsBuffer::new(plane.width, plane.height);
 
     render_to(&s, &plane, &sampler, &camera, &mut buffer);
 
-    buffer.buffer[x as usize][y as usize]
+    buffer.buffer[(x + (y * plane.width)) as usize]
 }
 
+#[wasm_bindgen]
 struct JsBuffer {
-    buffer: Vec<Vec<Rgb>>,
+    w: u32,
+    h: u32,
+    buffer: Vec<Rgb>,
 }
 
+#[wasm_bindgen]
 impl JsBuffer {
-    fn new(width: usize, height: usize) -> Self {
-        let mut buffer = Vec::with_capacity(width);
-        for _ in 0..width {
-            let mut row = Vec::with_capacity(height);
-            for _ in 0..height {
-                row.push(Rgb(0, 0, 0));
-            }
-            buffer.push(row);
+    fn new(width: u32, height: u32) -> Self {
+        let mut buffer = Vec::with_capacity((width * height) as usize);
+        Self {
+            w: width,
+            h: height,
+            buffer,
         }
-        Self { buffer }
+    }
+
+    pub fn width(&self) -> u32 {
+        self.w
+    }
+
+    pub fn height(&self) -> u32 {
+        self.h
+    }
+
+    pub fn pixels(&self) -> *const Rgb {
+        self.buffer.as_ptr()
     }
 }
 
 impl RenderTarget for JsBuffer {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
-        self.buffer[xy.x() as usize][xy.y() as usize] = Rgb(
+        self.buffer[(xy.x() + xy.y() * self.w) as usize] = Rgb(
             (color.r * 255.0) as u8,
             (color.g * 255.0) as u8,
             (color.b * 255.0) as u8,
