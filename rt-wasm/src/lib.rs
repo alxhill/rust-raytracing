@@ -8,16 +8,11 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn greet(name: &str) {
-    alert(&format!("Hello {}, you're a dickhead", name));
-}
-
-#[wasm_bindgen]
 #[derive(Clone, Copy)]
-pub struct Rgb(pub u8, pub u8, pub u8);
+pub struct Rgba(pub u8, pub u8, pub u8, pub u8);
 
 #[wasm_bindgen]
-pub fn pixel(x: u32, y: u32) -> Rgb {
+pub fn render() -> JsBuffer {
     let mut s = Scene::new();
     let red_mat = Arc::new(Phong::reflective(0.2, 0.3, 1.0, 5.0, RGBColor::RED, 1.0));
     s.add_object(Object::sphere(Sphere::new(Point3D::zero(), 10.0), red_mat));
@@ -31,20 +26,20 @@ pub fn pixel(x: u32, y: u32) -> Rgb {
 
     render_to(&s, &plane, &sampler, &camera, &mut buffer);
 
-    buffer.buffer[(x + (y * plane.width)) as usize]
+    buffer
 }
 
 #[wasm_bindgen]
-struct JsBuffer {
+pub struct JsBuffer {
     w: u32,
     h: u32,
-    buffer: Vec<Rgb>,
+    buffer: Vec<Rgba>,
 }
 
 #[wasm_bindgen]
 impl JsBuffer {
     fn new(width: u32, height: u32) -> Self {
-        let mut buffer = Vec::with_capacity((width * height) as usize);
+        let buffer = Vec::with_capacity((width * height) as usize);
         Self {
             w: width,
             h: height,
@@ -60,17 +55,18 @@ impl JsBuffer {
         self.h
     }
 
-    pub fn pixels(&self) -> *const Rgb {
+    pub fn pixels(&self) -> *const Rgba {
         self.buffer.as_ptr()
     }
 }
 
 impl RenderTarget for JsBuffer {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
-        self.buffer[(xy.x() + xy.y() * self.w) as usize] = Rgb(
+        self.buffer[(xy.x() + xy.y() * self.w) as usize] = Rgba(
             (color.r * 255.0) as u8,
             (color.g * 255.0) as u8,
             (color.b * 255.0) as u8,
+            0 // used by js canvas
         );
     }
 }
