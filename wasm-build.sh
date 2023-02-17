@@ -1,6 +1,8 @@
 #!/usr/local/bin/env bash
 
-wasm-pack build rt-wasm
+set -e -o pipefail
+
+wasm-pack build rt-wasm --debug
 
 cd rt-wasm/html/
 npm ci

@@ -1,5 +1,6 @@
 use crate::types::Double;
 use num_traits::NumCast;
+use std::fmt::{Display, Formatter};
 use std::ops::{Add, AddAssign, BitXor, Div, Mul};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -7,6 +8,12 @@ pub struct RGBColor {
     pub r: Double,
     pub g: Double,
     pub b: Double,
+}
+
+impl Display for RGBColor {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "RGBColor({:.2}, {:.2}, {:.2})", self.r, self.g, self.b)
+    }
 }
 
 impl RGBColor {
