@@ -25,7 +25,7 @@ impl RenderTarget for ImageTarget {
         self.buffer.put_pixel(
             xy.x(),
             self.buffer.height() - xy.y() - 1,
-            Rgb(color.as_u8()),
+            Rgb(color.into()),
         );
     }
 }

@@ -14,28 +14,32 @@ impl RGBColor {
         RGBColor { r, g, b }
     }
 
-    pub fn from([r, g, b]: [u8; 3]) -> RGBColor {
-        RGBColor {
-            r: r as Double / 255.0,
-            g: g as Double / 255.0,
-            b: b as Double / 255.0,
-        }
-    }
-
-    pub fn as_u8(&self) -> [u8; 3] {
-        [
-            (self.r.clamp(0.0, 1.0) * 255.0) as u8,
-            (self.g.clamp(0.0, 1.0) * 255.0) as u8,
-            (self.b.clamp(0.0, 1.0) * 255.0) as u8,
-        ]
-    }
-
     pub const WHITE: RGBColor = RGBColor::new(1.0, 1.0, 1.0);
     pub const RED: RGBColor = RGBColor::new(1.0, 0.0, 0.0);
     pub const GREEN: RGBColor = RGBColor::new(0.0, 1.0, 0.0);
     pub const YELLOW: RGBColor = RGBColor::new(1.0, 1.0, 0.0);
     pub const GREY: RGBColor = RGBColor::new(0.5, 0.5, 0.5);
     pub const BLACK: RGBColor = RGBColor::new(0.0, 0.0, 0.0);
+}
+
+impl From<[u8; 3]> for RGBColor {
+    fn from([r, g, b]: [u8; 3]) -> Self {
+        RGBColor {
+            r: r as Double / 255.0,
+            g: g as Double / 255.0,
+            b: b as Double / 255.0,
+        }
+    }
+}
+
+impl From<&RGBColor> for [u8; 3] {
+    fn from(color: &RGBColor) -> Self {
+        [
+            (color.r.clamp(0.0, 1.0) * 255.0) as u8,
+            (color.g.clamp(0.0, 1.0) * 255.0) as u8,
+            (color.b.clamp(0.0, 1.0) * 255.0) as u8,
+        ]
+    }
 }
 
 impl BitXor<Double> for RGBColor {
