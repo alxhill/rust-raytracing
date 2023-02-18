@@ -5,6 +5,7 @@ let scene = wasm.JsScene.new();
 
 
 let pixels_array = new Uint8ClampedArray(memory.buffer, scene.pixels(), scene.width() * scene.height() * 4);
+let image_data = new ImageData(pixels_array, scene.width(), scene.height());
 
 let canvas = document.getElementById("raytracing");
 canvas.width = scene.width();
@@ -26,7 +27,7 @@ const drawRender = () => {
     scene.render();
     console.log(`rendering took ${performance.now() - start} ms`);
 
-    ctx.putImageData(new ImageData(pixels_array, scene.width(), scene.height()), 0, 0);
+    ctx.putImageData(image_data, 0, 0);
 
     scene.move_camera(0, 0, 1.0);
 
