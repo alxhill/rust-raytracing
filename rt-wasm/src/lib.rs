@@ -1,6 +1,4 @@
 use rust_raytracing::prelude::*;
-use std::fmt::Display;
-use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -13,70 +11,88 @@ extern "C" {
 
 #[wasm_bindgen]
 #[derive(Clone, Copy)]
+#[repr(C)]
 pub struct Rgba(pub u8, pub u8, pub u8, pub u8);
 
-impl Display for Rgba {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Rgba({}, {}, {}, {})", self.0, self.1, self.2, self.3)
-    }
+#[wasm_bindgen]
+pub struct JsScene {
+    scene: Scene,
+    plane: ViewPlane,
+    sampler: JitteredSampler,
+    camera: PinholeCamera,
+    target: JsRenderTarget,
 }
 
 #[wasm_bindgen]
-pub fn render() -> JsBuffer {
-    console_error_panic_hook::set_once();
-    let mut s = Scene::new();
-    let red_mat = Arc::new(Phong::new(0.2, 0.3, 1.0, 5.0, RGBColor::RED));
-    s.add_object(Object::sphere(Sphere::new(Point3D::zero(), 50.0), red_mat));
-    s.add_light(Light::point_light(Point3D::new(0.0, 100.0, 0.0), 2.0));
+impl JsScene {
+    pub fn new() -> JsScene {
+        console_error_panic_hook::set_once();
 
-    let plane = ViewPlane::new(128, 128, 1.0);
-    let camera = PinholeCamera::new(-100.0, 100.0);
-    let sampler = JitteredSampler::new(plane, 1);
+        let scene = Scene::default_scene_one();
 
-    let mut buffer = JsBuffer::new(plane.width, plane.height);
+        let plane = ViewPlane::new(512, 512, 0.5);
+        let camera = PinholeCamera::new(-100.0, 100.0);
+        let sampler = JitteredSampler::new(plane, 8);
 
-    render_to(&s, &plane, &sampler, &camera, &mut buffer);
+        let target = JsRenderTarget::new(plane.width, plane.height);
 
-    buffer
-}
-
-#[wasm_bindgen]
-pub struct JsBuffer {
-    w: u32,
-    h: u32,
-    buffer: Vec<Rgba>,
-}
-
-#[wasm_bindgen]
-impl JsBuffer {
-    fn new(width: u32, height: u32) -> Self {
-        let mut buffer = Vec::with_capacity((width * height) as usize);
-        buffer.resize((width * height) as usize, Rgba(1, 1, 1, 1));
-        Self {
-            w: width,
-            h: height,
-            buffer,
+        JsScene {
+            scene,
+            plane,
+            sampler,
+            camera,
+            target,
         }
     }
 
-    pub fn width(&self) -> u32 {
-        self.w
+    pub fn render(&mut self) {
+        render_to(
+            &self.scene,
+            &self.plane,
+            &self.sampler,
+            &self.camera,
+            &mut self.target,
+        );
     }
 
-    pub fn height(&self) -> u32 {
-        self.h
+    pub fn move_camera(&mut self, x: Double, y: Double, z: Double) {
+        self.camera.position().move_by(&Vector3D::new(x, y, z));
     }
 
     pub fn pixels(&self) -> *const Rgba {
-        self.buffer.as_ptr()
+        self.target.buffer.as_ptr()
+    }
+
+    pub fn width(&self) -> u32 {
+        self.target.width
+    }
+
+    pub fn height(&self) -> u32 {
+        self.target.height
     }
 }
 
-impl RenderTarget for JsBuffer {
+pub struct JsRenderTarget {
+    pub width: u32,
+    pub height: u32,
+    pub buffer: Vec<Rgba>,
+}
+
+impl JsRenderTarget {
+    fn new(width: u32, height: u32) -> JsRenderTarget {
+        let mut buffer = Vec::with_capacity((width * height) as usize);
+        buffer.resize((width * height) as usize, Rgba(1, 1, 1, 1));
+        JsRenderTarget {
+            width,
+            height,
+            buffer,
+        }
+    }
+}
+
+impl RenderTarget for JsRenderTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
-        let rgba: Rgba = color.into();
-        log(&format!("{}", rgba));
-        self.buffer[(xy.x() + xy.y() * self.w) as usize] = color.into();
+        self.buffer[(xy.x() + xy.y() * self.width) as usize] = color.into();
     }
 }
 
@@ -86,7 +102,7 @@ impl From<&RGBColor> for Rgba {
             (value.r * 255.0) as u8,
             (value.g * 255.0) as u8,
             (value.b * 255.0) as u8,
-            0,
+            255,
         )
     }
 }
