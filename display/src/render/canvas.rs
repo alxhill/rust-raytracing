@@ -13,15 +13,14 @@ impl CanvasTarget<'_> {
     }
 }
 
-fn to_xy(xy: &ViewXY, height: usize) -> XY {
-    XY(xy.x() as usize, height - xy.y() as usize - 1)
+fn to_xy(xy: &ViewXY) -> XY {
+    XY(xy.x() as usize, xy.y() as usize)
 }
 
 impl RenderTarget for CanvasTarget<'_> {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
         let rgb = Rgb(color.into());
-        let h = self.canvas_img.height();
-        self.canvas_img[to_xy(xy, h)] = Color {
+        self.canvas_img[to_xy(xy)] = Color {
             r: rgb[0],
             g: rgb[1],
             b: rgb[2],

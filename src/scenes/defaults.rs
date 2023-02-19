@@ -29,6 +29,8 @@ impl Scene {
             Sphere::new(Point3D::new(40.0, 15.0, -2.0), 15.0),
             green_mat,
         ));
+
+        // floor and back
         scene.add_object(Object::plane(
             Plane::new(Point3D::new(0.0, -50.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
             grey_mat.clone(),
