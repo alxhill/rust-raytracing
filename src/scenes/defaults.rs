@@ -1,3 +1,4 @@
+use crate::surfaces::Normal;
 use crate::{Light, Object, Phong, Plane, Point3D, RGBColor, Scene, Sphere, Vector3D};
 use std::sync::Arc;
 
@@ -10,6 +11,7 @@ impl Scene {
         let grey_mat = Arc::new(Phong::new(0.5, 0.5, 0.0, 1.0, RGBColor::GREY));
         let green_mat = Arc::new(Phong::reflective(0.2, 0.4, 0.0, 1.0, RGBColor::GREEN, 0.8));
         let reflective_mat = Arc::new(Phong::reflective(0.0, 0.0, 0.0, 1.0, RGBColor::WHITE, 1.2));
+        let normal_mat = Arc::new(Normal::default());
 
         scene.add_object(Object::sphere(
             Sphere::new(Point3D::zero(), 30.0),
@@ -17,7 +19,7 @@ impl Scene {
         ));
         scene.add_object(Object::sphere(
             Sphere::new(Point3D::new(0.0, 60.0, -1.0), 20.0),
-            yellow_mat,
+            normal_mat,
         ));
         scene.add_object(Object::sphere(
             Sphere::new(Point3D::new(-40.0, 25.0, -2.0), 15.0),

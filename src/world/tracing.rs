@@ -23,7 +23,6 @@ pub struct Hit {
     pub hit_loc: Point3D,
     pub normal: Vector3D,
     pub ray: Ray,
-    pub depth: u8,
 }
 
 impl Hit {
@@ -34,7 +33,6 @@ impl Hit {
             hit_loc,
             normal,
             ray,
-            depth: 0,
         }
     }
 

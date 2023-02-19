@@ -8,6 +8,21 @@ pub trait Shadeable: Debug {
 }
 
 #[derive(Debug, Copy, Clone)]
+pub struct Normal;
+
+impl Shadeable for Normal {
+    fn shade(&self, hit: Hit, _scene: &Scene, _depth: Depth) -> RGBColor {
+        RGBColor::new(hit.normal.x + 1.0, hit.normal.y + 1.0, hit.normal.z + 1.0) * 0.5
+    }
+}
+
+impl Default for Normal {
+    fn default() -> Self {
+        Normal
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
 pub struct Matte {
     ambient: Lambertian,
     diffuse: Lambertian,
