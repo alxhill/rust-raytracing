@@ -29,6 +29,10 @@ impl Scene {
             Sphere::new(Point3D::new(40.0, 15.0, -2.0), 15.0),
             green_mat,
         ));
+        scene.add_object(Object::sphere(
+            Sphere::new(Point3D::new(40.0, 30.0, -2.0), 20.0),
+            yellow_mat,
+        ));
 
         // floor and back
         scene.add_object(Object::plane(
