@@ -13,7 +13,7 @@ canvas.height = scene.height();
 
 let ctx = canvas.getContext("2d");
 
-var render_loop = true;
+let render_loop = true;
 
 canvas.addEventListener("click", function (e) {
     render_loop = !render_loop;
