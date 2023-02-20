@@ -75,9 +75,9 @@ impl Phong {
         ka: Double,
         kd: Double,
         ks: Double,
+        kr: Double,
         exp: Double,
         cd: RGBColor,
-        kr: Double,
     ) -> Phong {
         Phong {
             ambient: Lambertian::new(ka, cd),

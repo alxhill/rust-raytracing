@@ -1,4 +1,4 @@
-use crate::types::RGBColor;
+use crate::types::{Point2D, RGBColor};
 
 use crate::world::{Camera, Sampler, Scene, ViewPlane, ViewXY};
 
@@ -15,7 +15,10 @@ pub fn render_to<'w, T: RenderTarget, S: Sampler, C: Camera>(
 ) {
     view_plane.for_each_pixel(|xy| {
         let mut pixel_color = RGBColor::BLACK;
-        let points = sampler.points_for_pixel(xy);
+        let mut points = Vec::with_capacity(sampler.num_samples() as usize);
+        for _ in 0..sampler.num_samples() {
+            points.push(sampler.sample_unit_square());
+        }
         for point in points.iter() {
             let ray = camera.ray_for_point(point);
             pixel_color += scene.render_color(&ray, 0);

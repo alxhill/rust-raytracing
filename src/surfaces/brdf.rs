@@ -1,5 +1,6 @@
 use crate::types::{Double, RGBColor, Vector3D};
 use crate::world::Hit;
+use crate::Sampler;
 use num_traits::Pow;
 use std::fmt::Debug;
 
@@ -79,4 +80,11 @@ impl PerfectSpecular {
         wi.normalize();
         (wi, (self.color * self.kr) / (hit.normal * wi).abs())
     }
+}
+
+pub struct GlossySpecular {
+    ks: Double,
+    exp: Double,
+    color: RGBColor,
+    sampler: Box<dyn Sampler>,
 }

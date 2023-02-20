@@ -92,7 +92,7 @@ impl JsRenderTarget {
 
 impl RenderTarget for JsRenderTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
-        self.buffer[(xy.x() + xy.y() * self.width) as usize] = color.into();
+        self.buffer[(xy.x() + (self.height - xy.y() - 1) * self.height) as usize] = color.into();
     }
 }
 
