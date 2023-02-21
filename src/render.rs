@@ -1,7 +1,5 @@
-use crate::Double;
+use crate::prelude::*;
 use crate::types::{Point2D, RGBColor};
-
-use crate::world::{Camera, Sampler, Scene, ViewPlane, ViewXY};
 
 pub trait RenderTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor);
@@ -14,10 +12,7 @@ pub fn render_to<'w, T: RenderTarget, S: Sampler, C: Camera>(
     camera: &C,
     img: &mut T,
 ) {
-    let (w, h) = (
-        view_plane.width as Double,
-        view_plane.height as Double,
-    );
+    let (w, h) = (view_plane.width as Double, view_plane.height as Double);
 
     view_plane.for_each_pixel(|xy| {
         let mut pixel_color = RGBColor::BLACK;
@@ -25,7 +20,7 @@ pub fn render_to<'w, T: RenderTarget, S: Sampler, C: Camera>(
             let sp = sampler.sample_unit_square();
             let vp = Point2D::new(h, w);
             let xy_point: Point2D = xy.into();
-            let pp: Point2D = view_plane.pixel_size * (xy_point - 0.5 * vp + sp);
+            let pp: Point2D = (xy_point - vp * 0.5 + sp) * view_plane.pixel_size;
 
             let ray = camera.ray_for_point(&pp);
             pixel_color += scene.render_color(&ray, 0);

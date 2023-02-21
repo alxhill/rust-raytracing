@@ -10,17 +10,17 @@ pub trait Sampler {
     fn num_samples(&self) -> u32;
 }
 
-struct SamplerInternal {
+pub struct SamplerInternal {
     pub num_samples: u32,
-    num_sets: u32,
-    samples: Vec<Point2D>,
+    pub num_sets: u32,
+    pub samples: Vec<Point2D>,
     shuffled_indices: Vec<u32>,
     count: u32,
     jump: u32,
 }
 
 impl SamplerInternal {
-    fn new(num: u32, num_sets: u32) -> SamplerInternal {
+    pub fn new(num: u32, num_sets: u32) -> SamplerInternal {
         let mut s = SamplerInternal {
             num_samples: num,
             num_sets,
@@ -39,7 +39,7 @@ impl SamplerInternal {
         self.shuffled_indices.shuffle(&mut rng);
     }
 
-    fn sample_unit_square(&mut self) -> Point2D {
+    pub fn sample_unit_square(&mut self) -> Point2D {
         if self.count % self.num_samples == 0 {
             self.jump = (random::<u32>() % self.num_sets) * self.num_samples;
         }
@@ -82,7 +82,7 @@ impl RegularSampler {
         );
 
         let mut points = Vec::new();
-        let n = (self.samples as Double).sqrt();
+        let n = (self.sampler_internal.num_samples as Double).sqrt();
         for i in 0..n as u32 {
             for j in 0..n as u32 {
                 let xw =
@@ -99,12 +99,15 @@ impl RegularSampler {
 
 impl Sampler for RegularSampler {
     fn generate_samples(&mut self) {
-        let n = (self.num_samples as Double).sqrt() as u32;
+        let n = (self.sampler_internal.num_samples as Double).sqrt() as u32;
 
         for i in 0..n {
             for j in 0..n {
-                let point = Point2D((i as Double + 0.5) / n, (j as Double + 0.5 ) / n);
-                self.samples.push(point);
+                let point = Point2D::new(
+                    (i as Double + 0.5) / n as Double,
+                    (j as Double + 0.5) / n as Double,
+                );
+                self.sampler_internal.samples.push(point);
             }
         }
     }

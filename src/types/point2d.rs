@@ -1,5 +1,6 @@
-use std::ops::{Add, Mul, Sub};
 use crate::types::Double;
+use num_traits::NumCast;
+use std::ops::{Add, Mul, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Point2D {
@@ -17,15 +18,35 @@ impl Point2D {
     pub fn new(x: Double, y: Double) -> Point2D {
         Point2D { x, y }
     }
+
+    pub fn swap(&self) -> Point2D {
+        Point2D {
+            x: self.y,
+            y: self.x,
+        }
+    }
 }
 
-impl Mul<Point2D> for Double {
+impl<T: NumCast> Mul<T> for Point2D {
     type Output = Point2D;
 
-    fn mul(self, rhs: Point2D) -> Self::Output {
+    fn mul(self, rhs: T) -> Self::Output {
+        let val: Double = num_traits::cast(rhs).unwrap();
         Point2D {
-            x: self * rhs.x,
-            y: self * rhs.y,
+            x: self.x * val,
+            y: self.y * val,
+        }
+    }
+}
+
+impl<T: NumCast> Add<T> for Point2D {
+    type Output = Point2D;
+
+    fn add(self, rhs: T) -> Self::Output {
+        let val: Double = num_traits::cast(rhs).unwrap();
+        Point2D {
+            x: self.x + val,
+            y: self.y + val,
         }
     }
 }
