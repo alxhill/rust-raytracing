@@ -49,7 +49,7 @@ impl JsScene {
         render_to(
             &self.scene,
             &self.plane,
-            &self.sampler,
+            &mut self.sampler,
             &self.camera,
             &mut self.target,
         );
