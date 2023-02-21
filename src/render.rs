@@ -23,12 +23,11 @@ pub fn render_to<'w, T: RenderTarget, S: Sampler, C: Camera>(
         let mut pixel_color = RGBColor::BLACK;
         for _ in 0..sampler.num_samples() {
             let sp = sampler.sample_unit_square();
-            let xw = view_plane.pixel_size * (xy.x() as Double - 0.5 * h + sp.x);
-            let yw = view_plane.pixel_size * (xy.y() as Double - 0.5 * w + sp.y);
+            let vp = Point2D::new(h, w);
+            let xy_point: Point2D = xy.into();
+            let pp: Point2D = view_plane.pixel_size * (xy_point - 0.5 * vp + sp);
 
-            let point = Point2D::new(xw, yw);
-
-            let ray = camera.ray_for_point(&point);
+            let ray = camera.ray_for_point(&pp);
             pixel_color += scene.render_color(&ray, 0);
         }
         pixel_color = (pixel_color / sampler.num_samples()) ^ view_plane.inv_gamma;

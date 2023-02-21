@@ -1,4 +1,4 @@
-use crate::types::Double;
+use crate::types::{Double, Point2D};
 
 type X = u32;
 type Y = u32;
@@ -12,6 +12,15 @@ impl ViewXY {
     }
     pub fn y(&self) -> Y {
         self.1
+    }
+}
+
+impl From<&ViewXY> for Point2D {
+    fn from(value: &ViewXY) -> Self {
+        Point2D {
+            x: value.x() as Double,
+            y: value.y() as Double,
+        }
     }
 }
 
