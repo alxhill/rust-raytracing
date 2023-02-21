@@ -5,7 +5,7 @@ mod scene;
 mod tracing;
 mod viewplane;
 
-pub use crate::samplers::sampler::*;
+pub use crate::samplers::internal::*;
 pub use camera::*;
 pub use lights::*;
 pub use objects::*;

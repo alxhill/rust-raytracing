@@ -1,1 +1,2 @@
-pub mod sampler;
+mod internal;
+pub mod jittered;
