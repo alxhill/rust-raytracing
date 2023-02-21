@@ -17,7 +17,7 @@ fn main() {
 
     let plane = ViewPlane::new(512, 512, 0.5);
     let mut camera = PinholeCamera::new(-100.0, 100.0);
-    let sampler = JitteredSampler::new(plane, 8);
+    let mut sampler = JitteredSampler::new(plane, 8);
 
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
 
@@ -36,7 +36,7 @@ fn main() {
                 render_to(
                     &scene,
                     &plane,
-                    &sampler,
+                    &mut sampler,
                     &camera,
                     &mut CanvasTarget::new(image),
                 );
@@ -44,7 +44,7 @@ fn main() {
         }
         "--output" => {
             let mut render = ImageTarget::new(plane.width, plane.height);
-            render_to(&scene, &plane, &sampler, &camera, &mut render);
+            render_to(&scene, &plane, &mut sampler, &camera, &mut render);
             render.save_image("output.png".to_string());
         }
         _ => println!("Invalid flag: {flag}"),
