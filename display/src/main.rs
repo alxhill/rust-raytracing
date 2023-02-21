@@ -17,7 +17,7 @@ fn main() {
 
     let plane = ViewPlane::new(512, 512, 0.5);
     let mut camera = PinholeCamera::new(-100.0, 100.0);
-    let mut sampler = JitteredSampler::new(8);
+    let mut sampler = MultiJittered::new(9);
 
     let flag = std::env::args().nth(1).unwrap_or("--display".to_string());
 
@@ -31,7 +31,6 @@ fn main() {
 
             println!("Starting display.");
             canvas.render(move |_, image| {
-                // copy_to(&render.buffer, &mut CanvasTarget::new(image));
                 camera.position().move_by(&Vector3D::new(0.0, 0.0, 0.5));
                 render_to(
                     &scene,

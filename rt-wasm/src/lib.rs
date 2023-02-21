@@ -32,7 +32,7 @@ impl JsScene {
 
         let plane = ViewPlane::new(512, 512, 0.5);
         let camera = PinholeCamera::new(-100.0, 100.0);
-        let sampler = JitteredSampler::new(plane, 8);
+        let sampler = JitteredSampler::new(8);
 
         let target = JsRenderTarget::new(plane.width, plane.height);
 

@@ -9,7 +9,7 @@ pub struct JitteredSampler {
 impl JitteredSampler {
     pub fn new(samples: u32) -> JitteredSampler {
         let mut j = JitteredSampler {
-            sampler_internal: SamplerInternal::new(samples, 83),
+            sampler_internal: SamplerInternal::new(samples, 1),
         };
         j.generate_samples();
         j
@@ -47,7 +47,7 @@ pub struct MultiJittered {
 impl MultiJittered {
     pub fn new(samples: u32) -> MultiJittered {
         let mut j = MultiJittered {
-            sampler_internal: SamplerInternal::new(samples, 83),
+            sampler_internal: SamplerInternal::new(samples, 7),
         };
         j.generate_samples();
         j
@@ -61,9 +61,10 @@ impl Sampler for MultiJittered {
         let n = s.sqrt() as u32;
         let subcell_width = 1.0 / s;
 
-        self.sampler_internal
-            .samples
-            .resize((n * n) as usize, Point2D::new(0.0, 0.0));
+        self.sampler_internal.samples.resize(
+            (self.sampler_internal.num_sets * n * n) as usize,
+            Point2D::new(0.0, 0.0),
+        );
 
         for p in 0..self.sampler_internal.num_sets {
             for i in 0..n {

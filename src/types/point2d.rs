@@ -1,6 +1,6 @@
 use crate::types::Double;
 use num_traits::NumCast;
-use std::ops::{Add, Mul, Sub};
+use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Point2D {
@@ -47,6 +47,18 @@ impl<T: NumCast> Add<T> for Point2D {
         Point2D {
             x: self.x + val,
             y: self.y + val,
+        }
+    }
+}
+
+impl<T: NumCast> Div<T> for Point2D {
+    type Output = Point2D;
+
+    fn div(self, rhs: T) -> Self::Output {
+        let val: Double = num_traits::cast(rhs).unwrap();
+        Point2D {
+            x: self.x / val,
+            y: self.y / val,
         }
     }
 }
