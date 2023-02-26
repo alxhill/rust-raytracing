@@ -14,6 +14,10 @@ default-members = ["display"]
 getrandom = { version = "0.2", features = ["js"] }
 rand = "0.8.5"
 num-traits = "0.2"
+rayon = { version = "1.6.1", optional = true}
+
+[features]
+parallel = ["rayon"]
 
 [profile.dev]
 opt-level = 3

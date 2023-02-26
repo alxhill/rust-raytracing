@@ -1,4 +1,5 @@
 use crate::types::{Double, Point2D};
+use rayon::iter::{IntoParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
 
 type X = u32;
 type Y = u32;
@@ -59,5 +60,76 @@ impl ViewPlane {
                 f(&ViewXY(x, y));
             }
         }
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub struct ViewPlaneIter {
+    view_plane: ViewPlane,
+    x: X,
+    y: Y,
+}
+
+impl IntoIterator for &ViewPlane
+where
+    ViewPlane: Send + Sync,
+{
+    type Item = ViewXY;
+    type IntoIter = ViewPlaneIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        ViewPlaneIter {
+            view_plane: *self,
+            x: 0,
+            y: 0,
+        }
+    }
+}
+
+impl Iterator for ViewPlaneIter {
+    type Item = ViewXY;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.y >= self.view_plane.height {
+            return None;
+        }
+        let result = ViewXY(self.x, self.y);
+        self.x += 1;
+        if self.x >= self.view_plane.width {
+            self.x = 0;
+            self.y += 1;
+        }
+        Some(result)
+    }
+}
+
+#[cfg(feature = "parallel")]
+impl IntoParallelIterator for ViewPlane {
+    type Iter = ViewPlaneIter;
+    type Item = ViewXY;
+
+    fn into_par_iter(self) -> Self::Iter {
+        ViewPlaneIter {
+            view_plane: self,
+            x: 0,
+            y: 0,
+        }
+    }
+}
+
+#[cfg(feature = "parallel")]
+impl ParallelIterator for ViewPlaneIter {
+    type Item = ViewXY;
+
+    fn drive_unindexed<C>(self, consumer: C) -> C::Result
+    where
+        C: rayon::iter::plumbing::UnindexedConsumer<Self::Item>,
+    {
+        let (x, y) = (self.x, self.y);
+        let (width, height) = (self.view_plane.width, self.view_plane.height);
+        (y..height)
+            .into_par_iter()
+            .flat_map(move |y| (x..width).into_par_iter().map(move |x| ViewXY(x, y)))
+            .drive_unindexed(consumer)
     }
 }

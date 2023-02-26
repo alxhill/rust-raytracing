@@ -9,7 +9,7 @@ use crate::render::image::ImageTarget;
 use pixel_canvas::input::MouseState;
 use pixel_canvas::Canvas;
 use rust_raytracing::prelude::*;
-use rust_raytracing::render::render_to;
+use rust_raytracing::render::{render_serial, render_to, RenderContext};
 
 fn main() {
     println!("Starting execution.");
@@ -31,14 +31,14 @@ fn main() {
 
             println!("Starting display.");
             canvas.render(move |_, image| {
-                camera.position().move_by(&Vector3D::new(0.0, 0.0, 0.5));
-                render_to(
-                    &scene,
-                    &plane,
-                    &mut sampler,
-                    &camera,
-                    &mut CanvasTarget::new(image),
-                );
+                camera.position().move_by(&Vector3D::new(0.0, 0.0, 1.0));
+                let mut ctx = RenderContext {
+                    scene: &scene,
+                    view_plane: &plane,
+                    sampler: &mut sampler,
+                    camera: &camera,
+                };
+                render_serial(&plane, &mut ctx, &mut CanvasTarget::new(image));
             });
         }
         "--output" => {

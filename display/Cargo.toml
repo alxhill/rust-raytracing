@@ -7,4 +7,5 @@ edition = "2021"
 image = "0.24.5"
 num-traits = "0.2.15"
 pixel-canvas = "0.2.3"
-rust-raytracing = { path = ".." }
+rayon = "1.6.1"
+rust-raytracing = { path = "..", features = ["parallel"] }

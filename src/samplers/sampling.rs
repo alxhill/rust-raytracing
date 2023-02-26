@@ -2,8 +2,6 @@ use crate::types::{Double, Point2D};
 use crate::world::ViewPlane;
 use crate::Point3D;
 use rand::prelude::*;
-use std::f64::consts::PI;
-use std::ops::Index;
 
 const DEFAULT_NUM_SETS: u32 = 83;
 
@@ -11,51 +9,6 @@ pub trait Sampler {
     fn generate_samples(&mut self);
     fn sample_unit_square(&mut self) -> Point2D;
     fn num_samples(&self) -> u32;
-    fn map_to_disk(&mut self) {
-        self.disk_samples.reserve(samples.len());
-        for p in samples.iter() {
-            let mut r: Double;
-            let mut phi: Double;
-            let dp = p * 2.0 - 1.0;
-            if dp.x > -dp.y {
-                if dp.x > dp.y {
-                    r = dp.x;
-                    phi = dp.y / dp.x;
-                } else {
-                    r = dp.y;
-                    phi = 2 - dp.y / dp.x;
-                }
-            } else {
-                if dp.x < dp.y {
-                    r = -dp.x;
-                    phi = 4 + dp.y / dp.x;
-                } else {
-                    r = -dp.y;
-                    if dp.y != 0.0 {
-                        phi = 6 - dp.y / dp.x;
-                    } else {
-                        phi = 0.0;
-                    }
-                }
-            }
-
-            phi *= PI / 4.0;
-            disk_samples.push(Point2D::new(r * phi.cos(), r * phi.sin()));
-        }
-    }
-    fn map_to_hemisphere(&mut self) {
-        self.hemisphere_samples.reserve(samples.len());
-        for p in samples.iter() {
-            let mut cos_phi = p.x.cos();
-            let sin_phi = p.x.sin();
-            let cos_theta = (1.0 - p.y).sqrt();
-            let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
-            let pu = sin_theta * cos_phi;
-            let pv = sin_theta * sin_phi;
-            let pw = cos_theta;
-            hemisphere_samples.push(Point3D::new(pu, pv, pw));
-        }
-    }
 }
 
 pub struct SamplerInternal {
