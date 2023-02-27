@@ -8,23 +8,6 @@ pub trait Shadeable: Debug {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub enum Material {
-    Normal(Normal),
-    Matte(Matte),
-    Phong(Phong),
-}
-
-impl Shadeable for Material {
-    fn shade(&self, hit: Hit, scene: &Scene, depth: Depth) -> RGBColor {
-        match self {
-            Material::Normal(normal) => normal.shade(hit, scene, depth),
-            Material::Matte(matte) => matte.shade(hit, scene, depth),
-            Material::Phong(phong) => phong.shade(hit, scene, depth),
-        }
-    }
-}
-
-#[derive(Debug, Copy, Clone)]
 pub struct Normal;
 
 impl Shadeable for Normal {
@@ -33,9 +16,9 @@ impl Shadeable for Normal {
     }
 }
 
-impl Normal {
-    pub fn new() -> Material {
-        Material::Normal(Normal)
+impl Default for Normal {
+    fn default() -> Self {
+        Normal
     }
 }
 
@@ -47,11 +30,11 @@ pub struct Matte {
 
 impl Matte {
     #[inline(always)]
-    pub fn new(ka: Double, kd: Double, cd: RGBColor) -> Material {
-        Material::Matte(Matte {
+    pub fn new(ka: Double, kd: Double, cd: RGBColor) -> Matte {
+        Matte {
             ambient: Lambertian::new(ka, cd),
             diffuse: Lambertian::new(kd, cd),
-        })
+        }
     }
 }
 
@@ -79,13 +62,13 @@ pub struct Phong {
 }
 
 impl Phong {
-    pub fn new(ka: Double, kd: Double, ks: Double, exp: Double, cd: RGBColor) -> Material {
-        Material::Phong(Phong {
+    pub fn new(ka: Double, kd: Double, ks: Double, exp: Double, cd: RGBColor) -> Phong {
+        Phong {
             ambient: Lambertian::new(ka, cd),
             diffuse: Lambertian::new(kd, cd),
             specular: Glossy::new(ks, exp, cd),
             reflective: None,
-        })
+        }
     }
 
     pub fn reflective(
@@ -95,13 +78,13 @@ impl Phong {
         kr: Double,
         exp: Double,
         cd: RGBColor,
-    ) -> Material {
-        Material::Phong(Phong {
+    ) -> Phong {
+        Phong {
             ambient: Lambertian::new(ka, cd),
             diffuse: Lambertian::new(kd, cd),
             specular: Glossy::new(ks, exp, cd),
             reflective: Some(PerfectSpecular::new(kr, cd)),
-        })
+        }
     }
 }
 

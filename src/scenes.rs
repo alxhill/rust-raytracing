@@ -1,16 +1,17 @@
 use crate::surfaces::Normal;
-use crate::{Light, Matte, Object, Phong, Plane, Point3D, RGBColor, Scene, Sphere, Vector3D};
+use crate::{Light, Object, Phong, Plane, Point3D, RGBColor, Scene, Sphere, Vector3D};
+use std::sync::Arc;
 
 impl Scene {
     pub fn default_scene_one() -> Scene {
         let mut scene = Scene::new();
 
-        let red_mat = Phong::reflective(0.25, 0.65, 0.6, 0.5, 20.0, RGBColor::RED);
-        let yellow_mat = Phong::new(0.2, 0.8, 0.0, 1.0, RGBColor::YELLOW);
-        let grey_mat = Matte::new(0.5, 0.5, RGBColor::GREY);
-        let green_mat = Phong::reflective(0.2, 0.4, 0.0, 0.8, 1.0, RGBColor::GREEN);
-        let reflective_mat = Phong::reflective(0.0, 0.0, 0.0, 1.2, 1.0, RGBColor::WHITE);
-        let normal_mat = Normal::new();
+        let red_mat = Arc::new(Phong::reflective(0.25, 0.65, 0.6, 0.5, 20.0, RGBColor::RED));
+        let yellow_mat = Arc::new(Phong::new(0.2, 0.8, 0.0, 1.0, RGBColor::YELLOW));
+        let grey_mat = Arc::new(Phong::new(0.5, 0.5, 0.0, 1.0, RGBColor::GREY));
+        let green_mat = Arc::new(Phong::reflective(0.2, 0.4, 0.0, 0.8, 1.0, RGBColor::GREEN));
+        let reflective_mat = Arc::new(Phong::reflective(0.0, 0.0, 0.0, 1.2, 1.0, RGBColor::WHITE));
+        let normal_mat = Arc::new(Normal::default());
 
         scene.add_object(Object::sphere(
             Sphere::new(Point3D::zero(), 30.0),
@@ -36,7 +37,7 @@ impl Scene {
         // floor and back
         scene.add_object(Object::plane(
             Plane::new(Point3D::new(0.0, -50.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
-            grey_mat,
+            grey_mat.clone(),
         ));
         scene.add_object(Object::plane(
             Plane::new(Point3D::new(0.0, 0.0, 150.0), Vector3D::new(0.0, 0.0, -1.0)),

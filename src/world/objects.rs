@@ -1,12 +1,13 @@
-use crate::surfaces::Material;
+use crate::surfaces::Shadeable;
 use crate::types::{Double, Point3D, Vector3D};
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::Ray;
+use std::sync::Arc;
 
 #[derive(Debug)]
 pub struct Object {
     pub geometry: Geometry,
-    pub material: Material,
+    pub material: Arc<dyn Shadeable>,
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -25,15 +26,15 @@ impl Hittable for Geometry {
 }
 
 impl Object {
-    pub fn new(geometry: Geometry, material: Material) -> Object {
+    pub fn new(geometry: Geometry, material: Arc<dyn Shadeable>) -> Object {
         Object { geometry, material }
     }
 
-    pub fn sphere(sphere: Sphere, material: Material) -> Object {
+    pub fn sphere(sphere: Sphere, material: Arc<dyn Shadeable>) -> Object {
         Object::new(Geometry::Sphere(sphere), material)
     }
 
-    pub fn plane(plane: Plane, material: Material) -> Object {
+    pub fn plane(plane: Plane, material: Arc<dyn Shadeable>) -> Object {
         Object::new(Geometry::Plane(plane), material)
     }
 }
