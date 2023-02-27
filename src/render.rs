@@ -3,10 +3,14 @@ use crate::types::{Point2D, RGBColor};
 
 pub trait RenderTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor);
+
+    fn set_pixel_par(&self, xy: &ViewXY, color: &RGBColor) {
+        unimplemented!("set_pixel_par not implemented for this RenderTarget");
+    }
 }
 
 pub trait Renderable {
-    fn render_pixel(&mut self, pixel: &ViewXY) -> RGBColor;
+    fn render_pixel(&self, pixel: &ViewXY) -> RGBColor;
 }
 
 pub struct RenderContext<'w, S: Sampler, C: Camera> {
@@ -17,7 +21,7 @@ pub struct RenderContext<'w, S: Sampler, C: Camera> {
 }
 
 impl<S: Sampler, C: Camera> Renderable for RenderContext<'_, S, C> {
-    fn render_pixel(&mut self, pixel_xy: &ViewXY) -> RGBColor {
+    fn render_pixel(&self, pixel_xy: &ViewXY) -> RGBColor {
         let mut pixel_color = RGBColor::BLACK;
         let (w, h) = (
             self.view_plane.width as Double,

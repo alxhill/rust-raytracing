@@ -31,7 +31,7 @@ impl Sampler for JitteredSampler {
         }
     }
 
-    fn sample_unit_square(&mut self) -> Point2D {
+    fn sample_unit_square(&self) -> Point2D {
         self.sampler_internal.sample_unit_square()
     }
 
@@ -104,7 +104,7 @@ impl Sampler for MultiJittered {
         }
     }
 
-    fn sample_unit_square(&mut self) -> Point2D {
+    fn sample_unit_square(&self) -> Point2D {
         self.sampler_internal.sample_unit_square()
     }
 

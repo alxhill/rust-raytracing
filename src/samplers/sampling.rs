@@ -2,12 +2,13 @@ use crate::types::{Double, Point2D};
 use crate::world::ViewPlane;
 use crate::Point3D;
 use rand::prelude::*;
+use std::sync::atomic::AtomicU32;
 
 const DEFAULT_NUM_SETS: u32 = 83;
 
 pub trait Sampler {
     fn generate_samples(&mut self);
-    fn sample_unit_square(&mut self) -> Point2D;
+    fn sample_unit_square(&self) -> Point2D;
     fn num_samples(&self) -> u32;
 }
 
@@ -17,7 +18,7 @@ pub struct SamplerInternal {
     pub samples: Vec<Point2D>,
     pub disk_samples: Vec<Point2D>,
     pub hemisphere_samples: Vec<Point3D>,
-    index: u32,
+    index: AtomicU32,
     // shuffled_indices: Vec<u32>,
     // count: u32,
     // jump: u32,
@@ -36,7 +37,7 @@ impl SamplerInternal {
             samples: Vec::new(),
             disk_samples: Vec::new(),
             hemisphere_samples: Vec::new(),
-            index: rng.gen_range(0..(num_samples * num_sets)),
+            index: rng.gen_range(0..(num_samples * num_sets)).into(),
             // shuffled_indices: Vec::new(),
             // count: 0,
             // jump: 0,
@@ -52,16 +53,18 @@ impl SamplerInternal {
     //     self.shuffled_indices.shuffle(&mut rng);
     // }
 
-    pub fn sample_unit_square(&mut self) -> Point2D {
-        self.index += 1;
-        self.samples[(self.index % (self.num_samples * self.num_sets)) as usize]
+    pub fn sample_unit_square(&self) -> Point2D {
+        let idx = self
+            .index
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        self.samples[(idx + 1 % (self.num_samples * self.num_sets)) as usize]
     }
 }
 
 impl Sampler for ViewPlane {
     fn generate_samples(&mut self) {}
 
-    fn sample_unit_square(&mut self) -> Point2D {
+    fn sample_unit_square(&self) -> Point2D {
         Point2D::new(0.5, 0.5)
     }
 
@@ -97,7 +100,7 @@ impl Sampler for RegularSampler {
         }
     }
 
-    fn sample_unit_square(&mut self) -> Point2D {
+    fn sample_unit_square(&self) -> Point2D {
         self.sampler_internal.sample_unit_square()
     }
 

@@ -22,11 +22,13 @@ impl ImageTarget {
 
 impl RenderTarget for ImageTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
-        self.buffer.put_pixel(
-            xy.x(),
-            self.buffer.height() - xy.y() - 1,
-            Rgb(color.into()),
-        );
+        self.buffer
+            .put_pixel(xy.x(), self.buffer.height() - xy.y() - 1, Rgb(color.into()));
+    }
+
+    fn set_pixel_par(&self, xy: &ViewXY, color: &RGBColor) {
+        self.buffer
+            .put_pixel(xy.x(), self.buffer.height() - xy.y() - 1, Rgb(color.into()));
     }
 }
 

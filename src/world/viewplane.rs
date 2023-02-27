@@ -1,5 +1,5 @@
 use crate::types::{Double, Point2D};
-use rayon::iter::{IntoParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 type X = u32;
 type Y = u32;
