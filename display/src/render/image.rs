@@ -25,11 +25,6 @@ impl RenderTarget for ImageTarget {
         self.buffer
             .put_pixel(xy.x(), self.buffer.height() - xy.y() - 1, Rgb(color.into()));
     }
-
-    fn set_pixel_par(&self, xy: &ViewXY, color: &RGBColor) {
-        self.buffer
-            .put_pixel(xy.x(), self.buffer.height() - xy.y() - 1, Rgb(color.into()));
-    }
 }
 
 pub fn copy_to<T: RenderTarget>(image: &RtImageBuffer, target: &mut T) {

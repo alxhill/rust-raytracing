@@ -6,6 +6,7 @@ mod render;
 
 use crate::render::canvas::CanvasTarget;
 use crate::render::image::ImageTarget;
+use crate::render::render_parallel;
 use pixel_canvas::input::MouseState;
 use pixel_canvas::Canvas;
 use rust_raytracing::prelude::*;
@@ -38,7 +39,8 @@ fn main() {
                     sampler: &mut sampler,
                     camera: &camera,
                 };
-                render_serial(&plane, &mut ctx, &mut CanvasTarget::new(image));
+                render_parallel(&plane, &ctx, &mut CanvasTarget::new(image));
+                // render_serial(&plane, &mut ctx, &mut CanvasTarget::new(image));
             });
         }
         "--output" => {

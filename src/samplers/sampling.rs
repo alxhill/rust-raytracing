@@ -57,7 +57,7 @@ impl SamplerInternal {
         let idx = self
             .index
             .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-        self.samples[(idx + 1 % (self.num_samples * self.num_sets)) as usize]
+        self.samples[(idx % (self.num_samples * self.num_sets)) as usize]
     }
 }
 

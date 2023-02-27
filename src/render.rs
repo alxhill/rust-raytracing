@@ -3,10 +3,6 @@ use crate::types::{Point2D, RGBColor};
 
 pub trait RenderTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor);
-
-    fn set_pixel_par(&self, xy: &ViewXY, color: &RGBColor) {
-        unimplemented!("set_pixel_par not implemented for this RenderTarget");
-    }
 }
 
 pub trait Renderable {
