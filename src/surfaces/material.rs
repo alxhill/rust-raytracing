@@ -3,7 +3,7 @@ use crate::types::{Double, RGBColor};
 use crate::world::{Depth, Hit, Ray, Scene};
 use std::fmt::Debug;
 
-pub trait Shadeable: Debug {
+pub trait Shadeable: Debug + Sync + Send {
     fn shade(&self, hit: Hit, scene: &Scene, depth: Depth) -> RGBColor;
 }
 
