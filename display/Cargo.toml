@@ -9,3 +9,10 @@ num-traits = "0.2.15"
 pixel-canvas = "0.2.3"
 rayon = "1.6.1"
 rust-raytracing = { path = "..", features = ["parallel"] }
+
+[profile.dev]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+debug = true
