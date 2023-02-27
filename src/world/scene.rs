@@ -1,6 +1,7 @@
 use crate::types::RGBColor;
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::{Light, Object, Ray};
+use crate::Shadeable;
 use std::fmt::Debug;
 
 pub type Depth = u8;
