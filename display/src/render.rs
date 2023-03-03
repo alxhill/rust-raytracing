@@ -22,6 +22,6 @@ pub fn render_parallel<R: Renderable + Sync, T: RenderTarget>(
     }).flatten().collect::<Vec<RGBColor>>();
 
     for (i, color) in output.iter().enumerate() {
-        img.set_pixel(&ViewXY(i % view_plane.width, i / view_plane.height), color);
+        img.set_pixel(&ViewXY(i / view_plane.width, i % view_plane.height), color);
     }
 }
