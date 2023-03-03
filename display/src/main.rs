@@ -44,7 +44,7 @@ fn main() {
             });
         }
         "--output" => {
-            let mut render = ImageTarget::new(plane.width, plane.height);
+            let mut render = ImageTarget::new(plane.width as u32, plane.height as u32);
             render_to(&scene, &plane, &mut sampler, &camera, &mut render);
             render.save_image("output.png".to_string());
         }

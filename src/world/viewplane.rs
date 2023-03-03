@@ -1,11 +1,11 @@
 use crate::types::{Double, Point2D};
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
-type X = u32;
-type Y = u32;
+type X = usize;
+type Y = usize;
 
 #[derive(Debug, Copy, Clone)]
-pub struct ViewXY(pub X, pub Y);
+pub struct ViewXY(pub usize, pub usize);
 
 impl ViewXY {
     pub fn x(&self) -> X {
@@ -25,6 +25,7 @@ impl From<&ViewXY> for Point2D {
     }
 }
 
+
 #[derive(Debug, Copy, Clone)]
 pub struct Screen {
     pub width: Double,
@@ -43,7 +44,7 @@ pub struct ViewPlane {
 }
 
 impl ViewPlane {
-    pub fn new(width: u32, height: u32, pixel_size: Double) -> ViewPlane {
+    pub fn new(width: usize, height: usize, pixel_size: Double) -> ViewPlane {
         ViewPlane {
             width,
             height,
@@ -52,6 +53,12 @@ impl ViewPlane {
             inv_gamma: 1.0,
             show_out_of_gamut: false,
         }
+    }
+
+    pub fn pixel_array(&self) -> Vec<ViewXY> {
+        let mut result = Vec::new();
+        self.for_each_pixel(|xy| result.push(*xy));
+        result
     }
 
     pub fn for_each_pixel(&self, mut f: impl FnMut(&ViewXY)) {

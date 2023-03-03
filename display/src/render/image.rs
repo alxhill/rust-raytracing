@@ -23,14 +23,14 @@ impl ImageTarget {
 impl RenderTarget for ImageTarget {
     fn set_pixel(&mut self, xy: &ViewXY, color: &RGBColor) {
         self.buffer
-            .put_pixel(xy.x(), self.buffer.height() - xy.y() - 1, Rgb(color.into()));
+            .put_pixel(xy.x() as u32, self.buffer.height() - (xy.y() as u32) - 1, Rgb(color.into()));
     }
 }
 
 pub fn copy_to<T: RenderTarget>(image: &RtImageBuffer, target: &mut T) {
     for x in 0..image.width() {
         for y in 0..image.height() {
-            target.set_pixel(&ViewXY(x, y), &RGBColor::from(image.get_pixel(x, y).0))
+            target.set_pixel(&ViewXY(x as usize, y as usize), &RGBColor::from(image.get_pixel(x, y).0))
         }
     }
 }
