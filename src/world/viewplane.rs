@@ -1,4 +1,6 @@
 use crate::types::{Double, Point2D};
+
+#[cfg(feature = "parallel")]
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 type X = usize;

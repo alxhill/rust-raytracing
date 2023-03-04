@@ -1,5 +1,6 @@
 use rust_raytracing::prelude::*;
 use wasm_bindgen::prelude::*;
+use rust_raytracing::render::{render_serial, RenderContext};
 
 #[wasm_bindgen]
 extern "C" {
@@ -32,7 +33,7 @@ impl JsScene {
 
         let plane = ViewPlane::new(512, 512, 0.5);
         let camera = PinholeCamera::new(-100.0, 100.0);
-        let sampler = JitteredSampler::new(8);
+        let sampler = JitteredSampler::new(9);
 
         let target = JsRenderTarget::new(plane.width, plane.height);
 
@@ -46,13 +47,15 @@ impl JsScene {
     }
 
     pub fn render(&mut self) {
-        render_to(
-            &self.scene,
+        render_serial(
             &self.plane,
-            &mut self.sampler,
-            &self.camera,
-            &mut self.target,
-        );
+            &RenderContext {
+                scene: &self.scene,
+                view_plane: &self.plane,
+                sampler: &mut self.sampler,
+                camera: &self.camera,
+            },
+            &mut self.target);
     }
 
     pub fn move_camera(&mut self, x: Double, y: Double, z: Double) {
@@ -63,23 +66,23 @@ impl JsScene {
         self.target.buffer.as_ptr()
     }
 
-    pub fn width(&self) -> u32 {
+    pub fn width(&self) -> usize {
         self.target.width
     }
 
-    pub fn height(&self) -> u32 {
+    pub fn height(&self) -> usize {
         self.target.height
     }
 }
 
 pub struct JsRenderTarget {
-    pub width: u32,
-    pub height: u32,
+    pub width: usize,
+    pub height: usize,
     pub buffer: Vec<Rgba>,
 }
 
 impl JsRenderTarget {
-    fn new(width: u32, height: u32) -> JsRenderTarget {
+    fn new(width: usize, height: usize) -> JsRenderTarget {
         let mut buffer = Vec::with_capacity((width * height) as usize);
         buffer.resize((width * height) as usize, Rgba(1, 1, 1, 1));
         JsRenderTarget {

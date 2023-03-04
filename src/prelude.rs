@@ -1,5 +1,5 @@
 pub use crate::{
-    render::{render_to, RenderTarget},
+    render::{RenderTarget, render_serial},
     samplers::{JitteredSampler, MultiJittered, Sampler},
     surfaces::{Matte, Phong, Shadeable},
     types::{Double, Point3D, RGBColor, Vector3D},
