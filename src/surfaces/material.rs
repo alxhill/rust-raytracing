@@ -1,13 +1,14 @@
 use crate::surfaces::brdf::{Glossy, Lambertian, PerfectSpecular, BRDF};
 use crate::types::{Double, RGBColor};
 use crate::world::{Depth, Hit, Ray, Scene};
+use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
-pub trait Shadeable: Debug + Sync + Send {
+pub trait Shadeable: Debug + Sync + Send + Serialize + Deserialize {
     fn shade(&self, hit: Hit, scene: &Scene, depth: Depth) -> RGBColor;
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct Normal;
 
 impl Shadeable for Normal {

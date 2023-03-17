@@ -2,15 +2,16 @@ use crate::surfaces::Shadeable;
 use crate::types::{Double, Point3D, Vector3D};
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::Ray;
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Object {
     pub geometry: Geometry,
     pub material: Arc<dyn Shadeable>,
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum Geometry {
     Sphere(Sphere),
     Plane(Plane),
@@ -45,7 +46,7 @@ impl Hittable for Object {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct Sphere {
     origin: Point3D,
     radius: Double,
@@ -84,7 +85,7 @@ impl Hittable for Sphere {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct Plane {
     point: Point3D,
     normal: Vector3D,

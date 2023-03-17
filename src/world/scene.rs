@@ -1,11 +1,12 @@
 use crate::types::RGBColor;
 use crate::world::tracing::{Hit, Hittable};
 use crate::world::{Light, Object, Ray};
+use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
 pub type Depth = u8;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Scene {
     pub objects: Vec<Object>,
     pub lights: Vec<Light>,

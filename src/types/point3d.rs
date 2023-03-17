@@ -1,7 +1,8 @@
 use crate::types::{Double, Vector3D};
+use serde::{Deserialize, Serialize};
 use std::ops::{Add, Mul, Sub};
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Point3D {
     x: Double,
     y: Double,

@@ -2,6 +2,7 @@ use crate::types::{Double, RGBColor, Vector3D};
 use crate::world::Hit;
 use crate::Sampler;
 use num_traits::Pow;
+use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
 pub trait BRDF: Debug {
@@ -9,7 +10,7 @@ pub trait BRDF: Debug {
     fn rho(&self, hit: &Hit, wo: &Vector3D) -> RGBColor;
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct Lambertian {
     kd: Double,
     color: RGBColor,
@@ -31,7 +32,7 @@ impl BRDF for Lambertian {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct Glossy {
     ks: Double,
     exp: Double,
@@ -62,7 +63,7 @@ impl BRDF for Glossy {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct PerfectSpecular {
     kr: Double,
     color: RGBColor,
