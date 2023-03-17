@@ -42,7 +42,7 @@ pub fn render_serial<R: Renderable, T: RenderTarget>(
     renderer: &R,
     img: &mut T,
 ) {
-    view_plane.for_each_pixel(|xy| {
+    view_plane.pixel_array().iter().for_each(|xy| {
         img.set_pixel(&xy, &renderer.render_pixel(&xy));
     });
 }

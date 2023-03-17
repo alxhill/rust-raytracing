@@ -3,9 +3,9 @@ use std::ops::{Add, Mul, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Point3D {
-    x: Double,
-    y: Double,
-    z: Double,
+    pub x: Double,
+    pub y: Double,
+    pub z: Double,
 }
 
 impl Point3D {
