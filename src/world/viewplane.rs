@@ -27,7 +27,6 @@ impl From<&ViewXY> for Point2D {
     }
 }
 
-
 #[derive(Debug, Copy, Clone)]
 pub struct Screen {
     pub width: Double,
@@ -58,7 +57,7 @@ impl ViewPlane {
     }
 
     pub fn pixel_array(&self) -> Vec<ViewXY> {
-        let mut result = Vec::new();
+        let mut result = Vec::with_capacity(self.width * self.height);
         self.for_each_pixel(|xy| result.push(*xy));
         result
     }
