@@ -9,14 +9,31 @@ pub struct Vector3D {
     pub z: Double,
 }
 
-impl Vector3D {
-    pub fn zero() -> Vector3D {
+impl Axis for Vector3D {
+    fn new(x: Double, y: Double, z: Double) -> Self {
+        Vector3D { x, y, z }
+    }
+
+    fn zero() -> Vector3D {
         Vector3D {
             x: 0.0,
             y: 0.0,
             z: 0.0,
         }
     }
+
+    fn x(&self) -> Double {
+        self.x
+    }
+    fn y(&self) -> Double {
+        self.y
+    }
+    fn z(&self) -> Double {
+        self.z
+    }
+}
+
+impl Vector3D {
     pub fn normal(x: Double, y: Double, z: Double) -> Vector3D {
         let mut v = Vector3D { x, y, z };
         v.normalize();
@@ -160,21 +177,6 @@ impl IndexMut<usize> for Vector3D {
     }
 }
 
-impl Axis<Double> for Vector3D {
-    fn new(x: Double, y: Double, z: Double) -> Self {
-        Vector3D { x, y, z }
-    }
-
-    fn x(&self) -> Double {
-        self.x
-    }
-    fn y(&self) -> Double {
-        self.y
-    }
-    fn z(&self) -> Double {
-        self.z
-    }
-}
 
 impl Mul<Matrix> for Vector3D {
     type Output = Vector3D;

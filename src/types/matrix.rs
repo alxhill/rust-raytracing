@@ -107,7 +107,7 @@ impl Transformable for Matrix {
     }
 }
 
-impl<T: Axis<Double>> Transformable for T {
+impl<T: Axis> Transformable for T {
     fn transform(&self, rhs: Matrix) -> Self {
         let x = self.x() * rhs[(0, 0)] + self.y() * rhs[(0, 1)] + self.z() * rhs[(0, 2)] + rhs[(0, 3)];
         let y = self.x() * rhs[(1, 0)] + self.y() * rhs[(1, 1)] + self.z() * rhs[(1, 2)] + rhs[(1, 3)];
@@ -116,11 +116,3 @@ impl<T: Axis<Double>> Transformable for T {
         Self::new(x, y, z)
     }
 }
-
-// impl<T: Axis<Double>> Mul<Matrix> for T {
-//     type Output = Self;
-//
-//     fn mul(self, rhs: Matrix) -> Self::Output {
-//         self.transform(rhs)
-//     }
-// }

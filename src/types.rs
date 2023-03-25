@@ -12,9 +12,10 @@ pub use vector3d::Vector3D;
 
 pub type Double = f64;
 
-pub trait Axis<T> {
-    fn new(x: T, y: T, z: T) -> Self;
-    fn x(&self) -> T;
-    fn y(&self) -> T;
-    fn z(&self) -> T;
+pub trait Axis {
+    fn new(x: Double, y: Double, z: Double) -> Self;
+    fn zero() -> Self;
+    fn x(&self) -> Double;
+    fn y(&self) -> Double;
+    fn z(&self) -> Double;
 }

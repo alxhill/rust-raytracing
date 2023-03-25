@@ -1,5 +1,5 @@
-use crate::types::{Axis, Double, Matrix, Vector3D};
 use crate::types::matrix::Transformable;
+use crate::types::{Axis, Double, Matrix, Vector3D};
 use std::ops::{Add, Index, Mul, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -75,9 +75,17 @@ impl Index<usize> for Point3D {
     }
 }
 
-impl Axis<Double> for Point3D {
+impl Axis for Point3D {
     fn new(x: Double, y: Double, z: Double) -> Self {
         Point3D { x, y, z }
+    }
+
+    fn zero() -> Self {
+        Point3D {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        }
     }
 
     fn x(&self) -> Double {
