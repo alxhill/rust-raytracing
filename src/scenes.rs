@@ -1,5 +1,5 @@
 use crate::surfaces::Normal;
-use crate::{ABox, Light, Object, Phong, Plane, Point3D, RGBColor, Scene, Sphere, Vector3D};
+use crate::{AABox, Light, Object, Phong, Plane, Point3D, RGBColor, Scene, Sphere, Vector3D};
 use std::sync::Arc;
 
 impl Scene {
@@ -32,6 +32,10 @@ impl Scene {
         scene.add_object(Object::sphere(
             Sphere::new(Point3D::new(40.0, 30.0, -2.0), 20.0),
             yellow_mat,
+        ));
+        scene.add_object(Object::aa_box(
+            AABox::new(Point3D::new(10.0, 10.0, 10.0), Point3D::new(50.0, 50.0, 50.0)),
+            red_mat.clone(),
         ));
 
         // floor and back
