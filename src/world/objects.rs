@@ -129,7 +129,7 @@ impl AABox {
 
 impl Hittable for AABox {
     fn hit(&self, ray: &Ray) -> Option<Hit> {
-        let mut t_min: Double = 0.00001; // epsilon value
+        let mut t_min: Double = Hit::EPSILON; // epsilon value
         let mut t_max: Double = f64::INFINITY;
         let mut face_axis = 0;
         let mut face_is_min = false;
