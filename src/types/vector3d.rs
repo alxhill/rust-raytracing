@@ -1,4 +1,5 @@
-use crate::types::Double;
+use crate::types::{Axis, Double, Matrix};
+use crate::types::matrix::Transformable;
 use std::ops::{Add, BitXor, Div, Index, IndexMut, Mul, Neg, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -9,10 +10,6 @@ pub struct Vector3D {
 }
 
 impl Vector3D {
-    pub const fn new(x: Double, y: Double, z: Double) -> Vector3D {
-        Vector3D { x, y, z }
-    }
-
     pub fn zero() -> Vector3D {
         Vector3D {
             x: 0.0,
@@ -21,7 +18,7 @@ impl Vector3D {
         }
     }
     pub fn normal(x: Double, y: Double, z: Double) -> Vector3D {
-        let mut v = Vector3D::new(x, y, z);
+        let mut v = Vector3D { x, y, z };
         v.normalize();
         v
     }
@@ -39,7 +36,10 @@ impl Vector3D {
     }
 
     pub fn component_mul(&self, v: Vector3D) -> Vector3D {
-        Vector3D::new(self.x * v.x, self.y * v.y, self.z * v.z)
+        let x = self.x * v.x;
+        let y = self.y * v.y;
+        let z = self.z * v.z;
+        Vector3D { x, y, z }
     }
 
     pub const UP: Vector3D = Vector3D {
@@ -53,7 +53,10 @@ impl Vector3D {
 impl Mul<Double> for Vector3D {
     type Output = Vector3D;
     fn mul(self, r: Double) -> Vector3D {
-        Vector3D::new(r * self.x, r * self.y, r * self.z)
+        let x = r * self.x;
+        let y = r * self.y;
+        let z = r * self.z;
+        Vector3D { x, y, z }
     }
 }
 
@@ -75,11 +78,10 @@ impl Mul for Vector3D {
 impl BitXor<Vector3D> for Vector3D {
     type Output = Vector3D;
     fn bitxor(self, v: Vector3D) -> Vector3D {
-        Vector3D::new(
-            self.y * v.z - self.z * v.y,
-            self.z * v.x - self.z * v.z,
-            self.x * v.y - self.y * v.x,
-        )
+        let x = self.y * v.z - self.z * v.y;
+        let y = self.z * v.x - self.z * v.z;
+        let z = self.x * v.y - self.y * v.x;
+        Vector3D { x, y, z }
     }
 }
 
@@ -87,7 +89,10 @@ impl BitXor<Vector3D> for Vector3D {
 impl Add for Vector3D {
     type Output = Vector3D;
     fn add(self, r: Vector3D) -> Vector3D {
-        Vector3D::new(self.x + r.x, self.y + r.y, self.z + r.z)
+        let x = self.x + r.x;
+        let y = self.y + r.y;
+        let z = self.z + r.z;
+        Vector3D { x, y, z }
     }
 }
 
@@ -95,7 +100,10 @@ impl Add for Vector3D {
 impl Sub for Vector3D {
     type Output = Vector3D;
     fn sub(self, r: Vector3D) -> Vector3D {
-        Vector3D::new(self.x - r.x, self.y - r.y, self.z - r.z)
+        let x = self.x - r.x;
+        let y = self.y - r.y;
+        let z = self.z - r.z;
+        Vector3D { x, y, z }
     }
 }
 
@@ -103,7 +111,10 @@ impl Sub for Vector3D {
 impl Neg for Vector3D {
     type Output = Vector3D;
     fn neg(self) -> Vector3D {
-        Vector3D::new(-self.x, -self.y, -self.z)
+        let x = -self.x;
+        let y = -self.y;
+        let z = -self.z;
+        Vector3D { x, y, z }
     }
 }
 
@@ -111,7 +122,10 @@ impl Neg for Vector3D {
 impl Div<Double> for Vector3D {
     type Output = Vector3D;
     fn div(self, r: Double) -> Vector3D {
-        Vector3D::new(self.x / r, self.y / r, self.z / r)
+        let x = self.x / r;
+        let y = self.y / r;
+        let z = self.z / r;
+        Vector3D { x, y, z }
     }
 }
 
@@ -143,5 +157,29 @@ impl IndexMut<usize> for Vector3D {
             2 => &mut self.z,
             _ => panic!("Index out of bounds"),
         }
+    }
+}
+
+impl Axis<Double> for Vector3D {
+    fn new(x: Double, y: Double, z: Double) -> Self {
+        Vector3D { x, y, z }
+    }
+
+    fn x(&self) -> Double {
+        self.x
+    }
+    fn y(&self) -> Double {
+        self.y
+    }
+    fn z(&self) -> Double {
+        self.z
+    }
+}
+
+impl Mul<Matrix> for Vector3D {
+    type Output = Vector3D;
+
+    fn mul(self, rhs: Matrix) -> Self::Output {
+        self.transform(rhs)
     }
 }

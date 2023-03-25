@@ -32,7 +32,7 @@ fn main() {
 
             println!("Starting display.");
             canvas.render(move |_, image| {
-                camera.position().move_by(&Vector3D::new(0.0, 0.0, 1.0));
+                camera.position().move_by(&Vector3D { x: 0.0, y: 0.0, z: 1.0 });
                 let ctx = RenderContext {
                     scene: &scene,
                     view_plane: &plane,

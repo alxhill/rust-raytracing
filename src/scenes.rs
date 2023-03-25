@@ -18,38 +18,38 @@ impl Scene {
             reflective_mat,
         ));
         scene.add_object(Object::sphere(
-            Sphere::new(Point3D::new(0.0, 60.0, -1.0), 20.0),
+            Sphere::new(Point3D { x: 0.0, y: 60.0, z: -1.0 }, 20.0),
             normal_mat,
         ));
         scene.add_object(Object::sphere(
-            Sphere::new(Point3D::new(-40.0, 25.0, -2.0), 15.0),
+            Sphere::new(Point3D { x: -40.0, y: 25.0, z: -2.0 }, 15.0),
             red_mat.clone(),
         ));
         scene.add_object(Object::sphere(
-            Sphere::new(Point3D::new(40.0, 15.0, -2.0), 15.0),
+            Sphere::new(Point3D { x: 40.0, y: 15.0, z: -2.0 }, 15.0),
             green_mat,
         ));
         scene.add_object(Object::sphere(
-            Sphere::new(Point3D::new(40.0, 30.0, -2.0), 20.0),
+            Sphere::new(Point3D { x: 40.0, y: 30.0, z: -2.0 }, 20.0),
             yellow_mat,
         ));
         scene.add_object(Object::aa_box(
-            AABox::new(Point3D::new(10.0, 10.0, 10.0), Point3D::new(50.0, 50.0, 50.0)),
+            AABox::new(Point3D { x: 10.0, y: 10.0, z: 10.0 }, Point3D { x: 50.0, y: 50.0, z: 50.0 }),
             red_mat.clone(),
         ));
 
         // floor and back
         scene.add_object(Object::plane(
-            Plane::new(Point3D::new(0.0, -50.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
+            Plane::new(Point3D { x: 0.0, y: -50.0, z: 0.0 }, Vector3D { x: 0.0, y: 1.0, z: 0.0 }),
             grey_mat.clone(),
         ));
         scene.add_object(Object::plane(
-            Plane::new(Point3D::new(0.0, 0.0, 150.0), Vector3D::new(0.0, 0.0, -1.0)),
+            Plane::new(Point3D { x: 0.0, y: 0.0, z: 150.0 }, Vector3D { x: 0.0, y: 0.0, z: -1.0 }),
             grey_mat,
         ));
 
-        scene.add_light(Light::point_light(Point3D::new(0.0, 100.0, 0.0), 2.0));
-        scene.add_light(Light::point_light(Point3D::new(0.0, 0.0, -50.0), 2.0));
+        scene.add_light(Light::point_light(Point3D { x: 0.0, y: 100.0, z: 0.0 }, 2.0));
+        scene.add_light(Light::point_light(Point3D { x: 0.0, y: 0.0, z: -50.0 }, 2.0));
 
         scene
     }

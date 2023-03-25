@@ -59,7 +59,7 @@ impl JsScene {
     }
 
     pub fn move_camera(&mut self, x: Double, y: Double, z: Double) {
-        self.camera.position().move_by(&Vector3D::new(x, y, z));
+        self.camera.position().move_by(&Vector3D { x, y, z });
     }
 
     pub fn pixels(&self) -> *const Rgba {

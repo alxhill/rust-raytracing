@@ -51,9 +51,9 @@ impl OrthoCamera {
     pub fn default() -> OrthoCamera {
         OrthoCamera {
             position: CameraPosition::new(
-                Point3D::new(0.0, 0.0, 100.0),
-                Point3D::new(0.0, 0.0, 0.0),
-                Vector3D::new(0.0, 1.0, 0.0),
+                Point3D { x: 0.0, y: 0.0, z: 100.0 },
+                Point3D { x: 0.0, y: 0.0, z: 0.0 },
+                Vector3D { x: 0.0, y: 1.0, z: 0.0 },
                 100.0,
             ),
         }
@@ -62,7 +62,9 @@ impl OrthoCamera {
 
 impl Camera for OrthoCamera {
     fn ray_for_point(&self, point: &Point2D) -> Ray {
-        let origin = self.position.eye + Point3D::new(point.x, point.y, 0.0);
+        let x = point.x;
+        let y = point.y;
+        let origin = self.position.eye + Point3D { x, y, z: 0.0 };
         let direction = (self.position.look_at - self.position.eye).normalize();
         Ray::new(origin, direction)
     }
@@ -85,8 +87,8 @@ impl PinholeCamera {
     pub fn new(eye_dist: Double, plane_dist: Double) -> PinholeCamera {
         PinholeCamera {
             position: CameraPosition::new(
-                Point3D::new(0.0, 0.0, eye_dist),
-                Point3D::new(0.0, 0.0, 0.0),
+                Point3D { x: 0.0, y: 0.0, z: eye_dist },
+                Point3D { x: 0.0, y: 0.0, z: 0.0 },
                 Vector3D::UP,
                 plane_dist,
             ),
@@ -96,9 +98,12 @@ impl PinholeCamera {
 
 impl Camera for PinholeCamera {
     fn ray_for_point(&self, point: &Point2D) -> Ray {
+        let x = point.x;
+        let y = point.y;
+        let z = self.position.distance;
         Ray::new(
             self.position.eye,
-            Vector3D::new(point.x, point.y, self.position.distance).normalize(),
+            Vector3D { x, y, z }.normalize(),
         )
     }
 

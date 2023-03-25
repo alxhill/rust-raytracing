@@ -1,8 +1,10 @@
 use std::ops::{Index, IndexMut, Mul};
+use crate::Double;
+use crate::types::Axis;
 
 #[derive(Copy, Clone)]
 pub struct Matrix {
-    matrix: [[f64; 4]; 4],
+    matrix: [[Double; 4]; 4],
 }
 
 impl Matrix {
@@ -71,6 +73,10 @@ impl Matrix {
     }
 }
 
+pub trait Transformable {
+    fn transform(&self, m: Matrix) -> Self;
+}
+
 impl Index<(usize, usize)> for Matrix {
     type Output = f64;
 
@@ -85,10 +91,8 @@ impl IndexMut<(usize, usize)> for Matrix {
     }
 }
 
-impl Mul for Matrix {
-    type Output = Self;
-
-    fn mul(self, rhs: Self) -> Self::Output {
+impl Transformable for Matrix {
+    fn transform(&self, rhs: Matrix) -> Self {
         let mut result = Self::new();
         for i in 0..4 {
             for j in 0..4 {
@@ -102,3 +106,21 @@ impl Mul for Matrix {
         result
     }
 }
+
+impl<T: Axis<Double>> Transformable for T {
+    fn transform(&self, rhs: Matrix) -> Self {
+        let x = self.x() * rhs[(0, 0)] + self.y() * rhs[(0, 1)] + self.z() * rhs[(0, 2)] + rhs[(0, 3)];
+        let y = self.x() * rhs[(1, 0)] + self.y() * rhs[(1, 1)] + self.z() * rhs[(1, 2)] + rhs[(1, 3)];
+        let z = self.x() * rhs[(2, 0)] + self.y() * rhs[(2, 1)] + self.z() * rhs[(2, 2)] + rhs[(2, 3)];
+
+        Self::new(x, y, z)
+    }
+}
+
+// impl<T: Axis<Double>> Mul<Matrix> for T {
+//     type Output = Self;
+//
+//     fn mul(self, rhs: Matrix) -> Self::Output {
+//         self.transform(rhs)
+//     }
+// }
