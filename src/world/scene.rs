@@ -37,29 +37,26 @@ impl Scene {
             return self.bg_color;
         }
 
-        if let (Some(hit), Some(obj)) = self.hit(ray) {
+        if let Some((hit, obj)) = self.hit(ray) {
             return obj.material.shade(hit, self, depth);
         }
         self.bg_color
     }
 
-    fn hit(&self, ray: &Ray) -> (Option<Hit>, Option<&Object>) {
-        let mut closest_hit = None;
-        let mut closest_obj = None;
+    fn hit(&self, ray: &Ray) -> Option<(Hit, &Object)> {
+        let mut result: Option<(Hit, &Object)> = None;
         for object in &self.objects {
             let maybe_hit = object.hit(ray);
-            match (maybe_hit, &closest_hit) {
+            match (maybe_hit, &result) {
                 (Some(new_hit), None) => {
-                    closest_obj = Some(object);
-                    closest_hit = Some(new_hit)
+                    result = Some((new_hit, object));
                 }
-                (Some(new_hit), Some(prev_hit)) if new_hit.t < prev_hit.t => {
-                    closest_obj = Some(object);
-                    closest_hit = Some(new_hit)
+                (Some(new_hit), Some((prev_hit, _))) if new_hit.t < prev_hit.t => {
+                    result = Some((new_hit, object));
                 }
-                (Some(_), Some(_)) | (None, _) => {}
+                _ => {}
             }
         }
-        (closest_hit, closest_obj)
+        result
     }
 }

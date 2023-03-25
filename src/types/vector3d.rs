@@ -1,6 +1,6 @@
 use crate::types::Double;
 use serde::{Deserialize, Serialize};
-use std::ops::{Add, BitXor, Div, Mul, Neg, Sub};
+use std::ops::{Add, BitXor, Div, Index, IndexMut, Mul, Neg, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Vector3D {
@@ -37,6 +37,10 @@ impl Vector3D {
 
     pub fn magnitude(&self) -> Double {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+    }
+
+    pub fn component_mul(&self, v: Vector3D) -> Vector3D {
+        Vector3D::new(self.x * v.x, self.y * v.y, self.z * v.z)
     }
 
     pub const UP: Vector3D = Vector3D {
@@ -116,5 +120,29 @@ impl Div<Double> for Vector3D {
 impl PartialEq<Double> for Vector3D {
     fn eq(&self, v: &Double) -> bool {
         self.x == *v || self.y == *v || self.z == *v
+    }
+}
+
+// Index-Based Access
+impl Index<usize> for Vector3D {
+    type Output = Double;
+    fn index(&self, i: usize) -> &Double {
+        match i {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            _ => panic!("Index out of bounds"),
+        }
+    }
+}
+
+impl IndexMut<usize> for Vector3D {
+    fn index_mut(&mut self, i: usize) -> &mut Double {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            _ => panic!("Index out of bounds"),
+        }
     }
 }
