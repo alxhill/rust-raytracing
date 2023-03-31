@@ -15,9 +15,7 @@ pub fn render_parallel<R: Renderable + Sync, T: RenderTarget>(
     let pixel_array = view_plane.pixel_array();
 
     let output = pixel_array
-        .chunks(CHUNK_SIZE)
-        .collect::<Vec<_>>()
-        .par_iter()
+        .par_chunks(CHUNK_SIZE)
         .map(|chunk| {
             let mut output_row = [RGBColor::BLACK; CHUNK_SIZE];
             for (i, xy) in (*chunk).iter().enumerate() {
