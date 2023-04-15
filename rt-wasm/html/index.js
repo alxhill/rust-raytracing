@@ -13,12 +13,14 @@ canvas.height = scene.height();
 
 let ctx = canvas.getContext("2d");
 
-let render_loop = true;
+let render_loop = false;
 
 canvas.addEventListener("click", function (e) {
     render_loop = !render_loop;
     if (render_loop) {
         drawRender();
+    } else {
+        requestAnimationFrame(drawPaused);
     }
 });
 
@@ -35,4 +37,18 @@ const drawRender = () => {
         requestAnimationFrame(drawRender);
 }
 
+const drawPaused = () => {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Click to render', canvas.width / 2, canvas.height / 2);
+}
+
 drawRender();
+drawPaused();
