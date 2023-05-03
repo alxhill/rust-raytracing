@@ -3,8 +3,9 @@ import { memory } from "rt-wasm/rt_wasm_bg";
 
 let scene = wasm.JsScene.new();
 
-
-let pixels_array = new Uint8ClampedArray(memory.buffer, scene.pixels(), scene.width() * scene.height() * 4);
+let length = scene.width() * scene.height() * 4;
+console.log(length);
+let pixels_array = new Uint8ClampedArray(memory.buffer, scene.pixels(), length);
 let image_data = new ImageData(pixels_array, scene.width(), scene.height());
 
 let canvas = document.getElementById("raytracing");
@@ -33,6 +34,8 @@ const drawRender = () => {
     scene.render();
     console.log(`rendering took ${performance.now() - start} ms`);
 
+    pixels_array = new Uint8ClampedArray(memory.buffer, scene.pixels(), length);
+    image_data = new ImageData(pixels_array, scene.width(), scene.height());
     ctx.putImageData(image_data, 0, 0);
 
     scene.move_camera(0, 0, 1.0);

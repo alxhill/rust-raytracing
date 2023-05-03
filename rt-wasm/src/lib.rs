@@ -1,6 +1,6 @@
 use rust_raytracing::prelude::*;
-use wasm_bindgen::prelude::*;
 use rust_raytracing::render::{render_serial, RenderContext};
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -55,7 +55,8 @@ impl JsScene {
                 sampler: &mut self.sampler,
                 camera: &self.camera,
             },
-            &mut self.target);
+            &mut self.target,
+        );
     }
 
     pub fn move_camera(&mut self, x: Double, y: Double, z: Double) {
@@ -83,8 +84,8 @@ pub struct JsRenderTarget {
 
 impl JsRenderTarget {
     fn new(width: usize, height: usize) -> JsRenderTarget {
-        let mut buffer = Vec::with_capacity((width * height) as usize);
-        buffer.resize((width * height) as usize, Rgba(1, 1, 1, 1));
+        let mut buffer = Vec::with_capacity(width * height);
+        buffer.resize(width * height, Rgba(1, 1, 1, 1));
         JsRenderTarget {
             width,
             height,
