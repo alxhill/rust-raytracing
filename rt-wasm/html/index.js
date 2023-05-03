@@ -15,14 +15,18 @@ let ctx = canvas.getContext("2d");
 
 let render_loop = false;
 
-canvas.addEventListener("click", function (e) {
+
+function toggleRender(e) {
     render_loop = !render_loop;
     if (render_loop) {
         drawRender();
     } else {
         requestAnimationFrame(drawPaused);
     }
-});
+}
+
+canvas.addEventListener("click", toggleRender);
+canvas.addEventListener("touchstart", toggleRender);
 
 const drawRender = () => {
     const start = performance.now();
