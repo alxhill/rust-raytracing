@@ -27,7 +27,6 @@ function toggleRender(e) {
 }
 
 canvas.addEventListener("click", toggleRender);
-canvas.addEventListener("touchstart", toggleRender);
 
 const drawRender = () => {
     const start = performance.now();
